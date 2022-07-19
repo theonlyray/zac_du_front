@@ -1,0 +1,172 @@
+<div class="media mb-4 mt-6"><span class="fa-stack mr-2 ml-n1">
+  <i class="fa-inverse fa-stack-1x text-primary fas fas fa-users" data-fa-transform="shrink-2"></i></span>
+  <div class="media-body">
+    <h5 class="mb-0 text-primary position-relative"><span class="bg-200 pr-3">Listado de {{vm.label}}.</span><span
+          class="border position-absolute absolute-vertical-center w-100 z-index--1 l-0"></span></h5>
+  </div>
+</div>
+<!-- save edit from -->
+<div class="card">
+  <div class="card-header">
+    <form name="userF" ng-if="vm.utype <= 5 && (vm.roleId == 4 || vm.roleId == 5)">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="inputPassword4">Nombre</label>
+          <input type="text" class="form-control" id="inputName" ng-model="vm.user.nombre" alpha required>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="inputNEmail">Correo</label>
+          <input type="email" class="form-control" id="inputNEmail" ng-model="vm.user.correo" alpha required >
+        </div>
+        <div class="form-group col-md-6">
+          <label for="inputNpass">{{vm.editing == true ? "Nueva ": ''}} Contraseña</label>
+          <input type="password" class="form-control" id="inputNpass" ng-model="vm.user.contrasenia" alpha ng-required="!vm.editing">
+        </div>
+        <div class="form-group col-md-3">
+          <label for="cantidad">Rol</b></label>
+          <select class="custom-select custom-select-sm ml-2" ng-model="vm.user.role_id" ng-options="item as item.name for item in vm.rolesArray track by item.id"></select>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="cantidad">Unidad</b></label>
+          <select class="custom-select custom-select-sm ml-2" ng-model="vm.user.unit_id" ng-options="item as item.nombre for item in vm.units track by item.id"></select>
+        </div>
+      </div>
+      <!-- editing ng-disabled="userF.$invalid"-->
+      <div class="form-group col-md-4" ng-if="vm.editing">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="submit" class="btn btn-success" ng-disabled="userF.$invalid" ng-click="vm.updateUser(vm.user,1)">
+            <i class="fas fa-save"></i> Guardar</button>
+          <button type="button" class="btn btn-secondary"  ng-click="vm.cancel()">Canelar</button>
+        </div>
+      </div>
+      <!-- save -->
+      <div class="form-group col-md-2" ng-if="!vm.editing">
+        <button type="submit" ng-disabled="userF.$invalid" class="btn btn-success" ng-click="vm.addUser(vm.user)">
+          <i class="fas fa-save"></i> Guardar</button>
+      </div>
+    </form>
+    <!-- search -->
+    <div class="row">
+      <div class="col-md-6">                
+        <label>Buscar...</label>
+        <input type="text" class="form-control" placeholder="Buscar..." ng-model="vm.filterText"> 
+      </div>
+      <div class="col-md-4">
+        <div class="dropdown mr-1">
+          <div class="form-group">
+            <label for="cantidad">No. usuarios por página <b>{{vm.data_page}}</b></label>
+            <select class="custom-select custom-select-sm ml-2" ng-model="vm.data_page" ng-options="item for item in vm.pageNumbers"></select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><br>
+
+<!-- permissions -->
+<div class="card" ng-if="vm.permissionsDiv">
+  <div class="card-header">
+    <!-- search -->
+    <div class="row">
+      <div class="col-md-12">
+        <p>Permisos Asignados a <b>{{vm.user.nombre}}</b></p>
+        <div class="alert alert-primary" role="alert">
+          Los permisos aquí listados son independientes a los asignados por defecto para el rol del usuario.
+        </div>
+        <label>Buscar permisos de usuario...</label>
+        <input type="text" class="form-control" placeholder="Buscar..." ng-model="vm.filterUsrPer"> 
+      </div>
+      <div class="col-md-12">                
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="submit" class="btn btn-success" ng-click="vm.savePerm()">
+            <i class="fas fa-save"></i> Guardar</button>
+          <button type="button" class="btn btn-secondary"  ng-click="vm.cancel()">Canelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">      
+      <div class="col-md-3" ng-repeat="per in vm.permissisonsToAdd | filter:  vm.filterUsrPer">
+        <div class="form-check form-check-inline" >
+          <input class="form-check-input" type="checkbox" id="{{$index}}-inlineCheckbox1" ng-model="per.checked">
+          <label class="form-check-label" for="{{$index}}-inlineCheckbox1">{{per.description}}</label>
+        </div>
+
+        <!-- <li ng-repeat="per in vm.permissisonsToAdd | filter:  vm.filterUsrPer ">{{per.description}}</li> -->
+      </div>
+    </div>
+  </div>
+</div><br>
+<!-- users list -->
+<div class="card">
+  <div class="card-body" ng-init="vm.init()">
+    <div class="table-responsive mt-4 fs--1">            
+          <table class="table table-striped border-bottom">
+              <thead>
+                  <tr>
+                      <th class="align-middle">Nombre</th>
+                      <th class="align-middle text-center" ng-if="vm.roleId <= 5">Unidad</th>
+                      <th class="align-middle text-center" ng-if="vm.roleId == 9">Colegio</th>
+                      <th class="align-middle text-center" >Fecha Registro</th>
+                      <th class="align-middle text-center" >Estado Mpio.</th>
+                      <th class="align-middle data-table-row-action"></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr class="btn-reveal-trigger"
+                    ng-repeat="user in vm.data_filter = (vm.users | filter : vm.filterText ).slice((vm.page -1) * vm.data_page, vm.page * vm.data_page)">
+                      <td class="align-middle">{{user.nombre}}</a><br>
+                        <span class="badge badge-pill badge-info">{{user.correo}} - {{vm.roleId}}</span><br>
+                      </td>
+                      <td class="align-middle text-center" ng-if="vm.roleId <= 5">
+                        {{user.unit[0].nombre}}
+                      </td>
+                      <td class="align-middle text-center" ng-if="vm.roleId == 9">
+                        {{user.college[0].nombre}}<br>
+                        <span class="badge badge-pill badge-info">
+                          {{user.college[0].pivot.validado == true ? "Activo Col" : "Suspendido Col"}}
+                        </span>
+                      </td>
+                      <td class="align-middle text-center">{{user.fecha_registro | date:"medium"}}</td>
+                      <td class="align-middle text-center">
+                        {{user.validado == true ? "Activo" : "Suspendido"}}
+                      </td>
+                      <td class="align-middle white-space-nowrap">
+                        <div class="dropdown text-sans-serif">
+                          <button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal mr-3"
+                            type="button" id="dropdown0" data-bs-toggle="dropdown" data-boundary="html"
+                            aria-haspopup="true" aria-expanded="false"><span
+                            class="fas fa-ellipsis-h fs--1"></span>
+                          </button>
+                          <div class="dropdown-menu dropdown-menu-right border py-0"
+                            aria-labelledby="dropdown0">
+                            <div class="bg-white py-2">
+                              <a class="dropdown-item" href="" data-bs-toggle="modal"
+                                ng-click="vm.updateUser(user,0)"> {{user.validado == true ? 'Deshabilitar' : 'Activar'}}
+                                <span class="ml-1 fas fa-user-check" data-fa-transform="shrink-2"></span></a>
+                              <a class="dropdown-item" href="" ng-click="vm.editUser(user)"
+                                ng-if="vm.utype <= 5 && (vm.roleId == 4 || vm.roleId == 5)">Editar<span
+                                class="ml-1 far fa-edit"
+                                data-fa-transform="shrink-2"></span></a>
+                              <a class="dropdown-item" href="" ng-click="vm.queryUser(user)"
+                                ng-if="vm.utype <= 5 && (vm.roleId == 4 || vm.roleId == 5)">Permisos<span
+                                class="ml-1 far fa-check-square"
+                                data-fa-transform="shrink-2"></span></a>
+                              <!-- <a class="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#delete-modal"
+                                ng-click="vm.edit_user(user)">Eliminar<span
+                                class="ml-1 fas fa-user-times"
+                                data-fa-transform="shrink-2"></span></a> -->
+                          </div>
+                          </div>                        
+                      </td>
+                  </tr>    
+              </tbody>
+          </table>
+          <uib-pagination total-items="vm.data.length" ng-model="vm.page" max-size="6"
+              boundary-link-numbers="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;"
+              items-per-page="vm.data_page">
+          </uib-pagination>
+    </div>
+  </div>
+</div>

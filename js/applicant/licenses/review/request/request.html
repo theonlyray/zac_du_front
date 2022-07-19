@@ -1,0 +1,84 @@
+<div class="card" ng-init="vm.init()">
+  <div class="card-header">
+    <div class="row align-items-center justify-content-between">
+      <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
+        <h1 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">
+          Navegación Rápida
+        </h1>
+      </div>
+      <div class="col-6 col-sm-auto ml-auto text-right pl-0">
+        <div id="dashboard-actions">   
+          <a class="btn btn-outline-primary rounded-capsule btn-sm" href="#!Solicitudes">                    
+            <span class="fas fa-list"></span> Solicitudes </a>
+          <a class="btn btn-outline-info rounded-capsule btn-sm" href="#!license_reqs">                    
+            <span class="fas fa-file-upload"></span> Requisitos </a>
+          <a class="btn btn-outline-success rounded-capsule btn-sm"
+            data-bs-toggle="modal" data-bs-target="#sendModal">                    
+            <span class="fas fa-paper-plane"></span> Enviar solicitud </a>
+          <a class="btn btn-outline-danger rounded-capsule btn-sm"
+            data-bs-toggle="modal" data-bs-target="#cancelModal">                    
+            <span class="fas fa-file-prescription"></span> Cancelar Solicitud </a>
+        </div>
+      </div>
+    </div><br>
+    <div class="row align-items-center justify-content-between">    
+      <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
+        <h2 class="fs-0 mb-0 text-nowrap py-2 py-xl-0"> 
+          <label>
+            <b>{{vm.license.license_type.nombre}}</b><br>
+            <b>{{vm.license.license_type.nota}}</b><br>
+            No. Folio <b>{{vm.license.folio != null ? vm.license.folio : vm.license.id}}</b> <br>
+            Estatus: <b>{{vm.license.estatus}}</b>
+          </label>
+        </h2>
+      </div>
+    </div>    
+  </div>
+</div><br>
+<form-review-component license="vm.license"></form-review-component>
+
+<!-- modals -->
+<!-- enviar solicitud -->
+<div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sendModalLabel">Enviar la Solicitud No. {{vm.license.id}}</h5>
+        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="font-weight-light"
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p>Está a punto de generar la <b>{{vm.license.license_type.nombre}} {{vm.license.license_type.nota}}</b> con No. <b>{{vm.license.id}}</b>
+        <p>Asegurece de haber cargadado toda la información y requisitos necesarios, de no ser así el Mpio. podrá <b>rechazar</b> su solicitud.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal" ng-click="vm.validation(1)">ENVIAR SOLICITUD</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- cancelacion -->
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelModalLabel">Cancelar trámite {{vm.license.folio}}</h5>
+        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="font-weight-light"
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p>Está a punto de <b>CANCELAR</b> el trámite <b>{{vm.license.type.descripcion}}</b> con el folio <b>{{vm.license.folio}}</b>.</p>
+        <b>Esta solicitud no podrá ser restaurada.</b>
+        <textarea class="form-control" ng-model="vm.license.observacion" rows="3" placeholder="Motivo de cancelación" required></textarea>
+        <input type="password" ng-model="vm.license.contrasenia" class="form-control mt-2" placeholder="Contraseña" required autocomplete="new-password">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cerrar</button>
+        <button class="btn btn-danger btn-sm" type="button" data-bs-dismiss="modal" ng-click="vm.observations(15)">Cancelar trámite</button>
+      </div>
+    </div>
+  </div>
+</div>

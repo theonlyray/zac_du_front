@@ -1,0 +1,189 @@
+<div class="media mb-4 mt-6"><span class="fa-stack mr-2 ml-n1">
+    <i class="fa-inverse fa-stack-1x text-primary fas fas fa-box-open" data-fa-transform="shrink-2"></i></span>
+    <div class="media-body">
+      <h5 class="mb-0 text-primary position-relative"><span class="bg-200 pr-3">Listado de tipos de licencia.</span><span
+            class="border position-absolute absolute-vertical-center w-100 z-index--1 l-0"></span></h5>
+    </div>
+</div>
+<div class="card" ng-init="vm.init()">
+    <div class="card-header">
+        <!-- search -->
+        <div class="row">
+            <div class="col-md-12">
+                <form name="userF" ng-if="vm.editing">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputPassword4">Nombre</label>
+                            <input type="text" class="form-control" id="inputName" ng-model="vm.licType.nombre" alpha required>
+                        </div>
+                        <div class="form-group col-md-6 form-floating">
+                            <textarea class="form-control" id="reqNote_{{$index}}" style="height: 100px" ng-model="vm.licType.nota"></textarea>
+                            <label for="reqNote_{{$index}}">Nota</label>
+                        </div>
+                        <div class="form-group col-md-6 form-floating">
+                            <textarea class="form-control" id="reqNote_{{$index}}" style="height: 100px" ng-model="vm.licType.descripcion"></textarea>
+                            <label for="reqNote_{{$index}}">Descripcion</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input" id="reqAct_{{$index}}" ng-model="vm.licType.activo">
+                            <label class="form-check-label" for="reqAct_{{$index}}">Activo</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input" id="reqObl_{{$index}}" ng-model="vm.licType.particular">
+                            <label class="form-check-label" for="reqObl_{{$index}}">Visible para Particular</label>
+                        </div>
+                    </div>
+                    <!-- editing ng-disabled="userF.$invalid"-->
+                    <div class="form-group col-md-4" ng-if="vm.editing">
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="submit" class="btn btn-success" ng-click="vm.updateLicType(vm.licType)">
+                          <i class="fas fa-save"></i> Guardar</button>
+                        <button type="button" class="btn btn-secondary"  ng-click="vm.cancel()">Canelar</button>
+                      </div>
+                    </div>
+                    <!-- save -->
+                    <div class="form-group col-md-2" ng-if="!vm.editing">
+                      <button type="submit" ng-disabled="userF.$invalid" class="btn btn-success" ng-click="vm.addLicType(vm.licType)">
+                        <i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                  </form>
+            </div>
+            <div class="col-md-6">                
+                <label>Buscar trámite...</label>
+                <input type="text" class="form-control" placeholder="Buscar trámite..." ng-model="vm.licTypeFilter"> 
+            </div>
+            <div class="col-md-6">                
+                <label>Buscar requisito...</label>
+                <input type="text" class="form-control" placeholder="Buscar requisito..." ng-model="vm.reqFilter"> 
+            </div>
+        </div>
+    </div>
+    <div class="card-body" ng-init="vm.init()">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="sticky-top sticky-sidebar">
+                    <div class="card mb-3 overflow-hidden">
+                        <div class="card-header">Listado de Trámites</div>
+                        <div class="list-group">
+                            <button type="button" 
+                                class="list-group-item list-group-item-action"
+                                aria-current="true"
+                                ng-repeat="licType in vm.licTypes | filter : vm.licTypeFilter"
+                                ng-click="vm.setLicType(licType)">
+                                    <p><strong>{{licType.nombre}}</strong></p>
+                                    <p><small>{{licType.nota}}</small></p>
+                                    <p><em>{{licType.descripcion}}</em></p>
+                            </button>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div class="col-md-8 pr-lg-2" ng-if="vm.licType != undefined">
+                <div class="card mb-3 no-gutters">
+                    <div class="card-header">
+                        Requisitos asignados a {{vm.licType.nombre}} - {{vm.licType.nota}}
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addReq">
+                                <i class="fas fa-file"></i> Nuevo Requisito</button>
+                            <button type="button" class="btn btn-secondary"  ng-click="vm.cancel()">Canelar</button>
+                        </div>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="req in vm.licType.requirements | filter:  vm.reqFilter">
+                            <div class="card">
+                                <form ng-submit="vm.updateReq(req, $index)">
+                                    <div class="card-header">
+                                        <div class="mb-3">
+                                            <label for="reqName_{{$index}}" class="form-label">Nombre</label>
+                                            <input type="text" class="form-control" id="reqName_{{$index}}" ng-model="req.nombre">
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <div class="form-floating">
+                                                <textarea class="form-control" id="reqNote_{{$index}}" style="height: 100px" ng-model="req.nota"></textarea>
+                                                <label for="reqNote_{{$index}}">Nota</label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="form-floating">
+                                                <textarea class="form-control" id="reqDesc_{{$index}}" style="height: 100px" ng-model="req.descripcion"></textarea>
+                                                <label for="reqDesc_{{$index}}">Descripcion</label>
+                                            </div>
+                                        </div>                                            
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="reqAct_{{$index}}" ng-model="req.activo">
+                                            <label class="form-check-label" for="reqAct_{{$index}}">Activo</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="reqObl_{{$index}}" ng-model="req.obligatorio">
+                                            <label class="form-check-label" for="reqObl_{{$index}}">Obligatorio</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" id="reqObl_{{$index}}" ng-model="req.es_plano">
+                                            <label class="form-check-label" for="reqObl_{{$index}}">Es Plano</label>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                        <br>
+                                        <small class="text-muted">Fecha de registro {{req.fecha_registro | date:"medium"}}</small><br>
+                                        <small class="text-muted">Fecha de actualización {{req.fecha_actualizacion | date:"medium"}}</small>
+                                    </div>
+                                </form> 
+                            </div>                              
+                        </li>
+                    </ul>
+                </div>                                    
+            </div>
+        </div>
+    </div>
+</div>
+  
+<!-- Modal -->
+<div class="modal fade" id="addReq" tabindex="-1" aria-labelledby="addReqLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addReqLabel">Agregar Nuevo Requisito a {{vm.licType.nombre}} - {{vm.licType.nota}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form ng-submit="vm.saveReq(vm.req)">
+            <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="reqName_{{$index}}" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="reqName_{{$index}}" ng-model="vm.req.nombre">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <textarea class="form-control" id="reqNote_{{$index}}" style="height: 100px" ng-model="vm.req.nota"></textarea>
+                            <label for="reqNote_{{$index}}">Nota</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <textarea class="form-control" id="reqDesc_{{$index}}" style="height: 100px" ng-model="vm.req.descripcion"></textarea>
+                            <label for="reqDesc_{{$index}}">Descripcion</label>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" class="form-check-input" id="reqAct_{{$index}}" ng-model="vm.req.activo">
+                        <label class="form-check-label" for="reqAct_{{$index}}">Activo</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" class="form-check-input" id="reqObl_{{$index}}" ng-model="vm.req.obligatorio">
+                        <label class="form-check-label" for="reqObl_{{$index}}">Obligatorio</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" class="form-check-input" id="reqObl_{{$index}}" ng-model="vm.req.es_plano">
+                        <label class="form-check-label" for="reqObl_{{$index}}">Es Plano</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar requisito</button>
+                </div>
+            </form> 
+        </div>
+    </div>
+</div>

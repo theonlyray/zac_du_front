@@ -1,0 +1,161 @@
+<div class="row no-gutters" ng-init="vm.init()">
+    <div class="col-lg-8 pr-lg-2">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Perfil</h5>
+            </div>
+            <div class="card-body bg-light">
+                <form ng-submit="vm.updateMe(vm.user)">
+                    <div class="form-row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="Nombre">Nombre</label>
+                                <input class="form-control" id="Nombre" type="text" ng-model="vm.user.nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="email">Correo</label>
+                                <input class="form-control" id="email" type="email" ng-model="vm.user.correo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <button class="btn btn-primary" type="submit">Actualizar </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Detalles</h5>
+            </div>
+            <div class="card-body bg-light">
+                <form ng-submit="vm.updateMe(vm.user)">
+                    <div class="form-row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="Ocupacion">Ocupación</label>
+                                <input class="form-control" id="Ocupacion" type="text" ng-model="vm.user.applicant_data.ocupacion">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="RFC">RFC</label>
+                                <input class="form-control" id="RFC" type="text" ng-model="vm.user.applicant_data.rfc">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="no_registro">No. Registro</label>
+                                <input class="form-control" id="no_registro" type="text" ng-model="vm.user.applicant_data.no_registro">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="Celular">Célular</label>
+                                <input class="form-control" id="Celular" type="text" ng-model="vm.user.applicant_data.celular">
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="form-group">
+                                <label for="Calle">Calle</label>
+                                <input class="form-control" id="Calle" type="text" ng-model="vm.user.applicant_data.calle">
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="no">No</label>
+                                <input class="form-control" id="no" type="text" ng-model="vm.user.applicant_data.no">
+                            </div>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="form-group">
+                                <label for="Colonia">Colonia</label>
+                                <input class="form-control" id="Colonia" type="text" ng-model="vm.user.applicant_data.colonia">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="CP">CP</label>
+                                <input class="form-control" id="CP" type="text" ng-model="vm.user.applicant_data.cp">
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button class="btn btn-primary" type="submit">Actualizar </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 pl-lg-2">
+        <div class="sticky-top sticky-sidebar">
+            <div class="card mb-3 overflow-hidden">
+                <div class="card-header">
+                    <h5 class="mb-0">Cambiar Contraseña</h5>
+                </div>
+                <div class="card-body bg-light">
+                    <form ng-submit="vm.updateMe(vm.user)">
+                        <!-- <div class="form-group">
+                            <label for="old-password">Contraseña Actual</label>
+                            <input class="form-control" id="old-password" type="password" ng-model="vm.passwords.old"
+                                required>
+                        </div> -->
+                        <div class="form-group">
+                            <label for="new-password">Nueva Contraseña</label>
+                            <input class="form-control" id="new-password" type="password"
+                                ng-model="vm.user.contrasenia" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirmar Nueva Contraseña</label>
+                            <input class="form-control" id="confirm-password" type="password"
+                                ng-model="vm.user.ccontrasenia" required>
+                        </div>
+                        <button class="btn btn-primary btn-block" type="submit">Actualizar Contraseña</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8 pr-lg-2" ng-if="vm.utype <=3">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Departamento</h5>
+            </div>
+            <div class="card-body bg-light">
+                <form ng-submit="vm.updateDep(vm.user.department[0])">
+                    <div class="form-row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="Nombre">Nombre</label>
+                                <input class="form-control" id="Nombre" type="text" ng-model="vm.user.department[0].nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="email">Correo</label>
+                                <input class="form-control" id="email" type="email" ng-model="vm.user.department[0].correo">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="email">Teléfono</label>
+                                <input class="form-control" id="ini" type="text" ng-model="vm.user.department[0].telefono">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <button class="btn btn-primary" type="submit">Actualizar </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>    
+</div>

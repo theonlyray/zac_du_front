@@ -1,0 +1,59 @@
+<div class="media mb-4 mt-6"><span class="fa-stack mr-2 ml-n1">
+  <i class="fa-inverse fa-stack-1x text-primary fas fas fa-users" data-fa-transform="shrink-2"></i></span>
+  <div class="media-body">
+    <h5 class="mb-0 text-primary position-relative"><span class="bg-200 pr-3">Listado de Roles y permisos</span><span
+          class="border position-absolute absolute-vertical-center w-100 z-index--1 l-0"></span></h5>
+  </div>
+</div>
+<!-- save edit from -->
+<div class="card">
+  <div class="card-header" ng-if="vm.role != undefined">
+    <!-- search -->
+    <div class="row">
+      <div class="col-md-6">                
+        <label>Buscar permiso...</label>
+        <input type="text" class="form-control" placeholder="Buscar..." ng-model="vm.filterText"> 
+      </div>
+      <!-- <div class="col-md-4">
+        <div class="dropdown mr-1">
+          <div class="form-group">
+            <label for="cantidad">No. usuarios por página <b>{{vm.data_page}}</b></label>
+            <select class="custom-select custom-select-sm ml-2" ng-model="vm.data_page" ng-options="item for item in vm.pageNumbers"></select>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+<!-- role list -->
+  <div class="card-body" ng-init="vm.init()">
+    <div class="row">
+      <div class="col-md-4">
+        <p>Listado de Roles</p>
+        <div class="list-group">
+          <button type="button" 
+            class="list-group-item list-group-item-action"
+            aria-current="true"
+            ng-repeat="role in vm.roles"
+            ng-click="vm.setRole(role)">{{role.description}}</button>
+        </div>
+      </div>
+      <div class="col-md-8" ng-if="vm.role != undefined">
+        <p>Permisos asignados a {{vm.role.description}}</p>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="submit" class="btn btn-success" ng-click="vm.saveRole()">
+            <i class="fas fa-save"></i> Guardar</button>
+          <button type="button" class="btn btn-secondary"  ng-click="vm.cancel()">Canelar</button>
+        </div>
+        <div class="row">      
+          <div class="col-md-4" ng-repeat="per in vm.permissisonsToAdd | filter:  vm.filterText">
+            <div class="form-check form-check-inline" >
+              <input class="form-check-input" type="checkbox" id="{{$index}}-inlineCheckbox1" ng-model="per.checked">
+              <label class="form-check-label" for="{{$index}}-inlineCheckbox1">{{per.description}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+</div>

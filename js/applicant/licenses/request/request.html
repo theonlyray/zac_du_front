@@ -1,0 +1,111 @@
+<div class="media mb-4 mt-6"><span class="fa-stack mr-2 ml-n1"><i class="fas fa-circle fa-stack-2x text-300"></i><i
+      class="fa-inverse fa-stack-1x text-primary fas fa-folder-plus" data-fa-transform="shrink-2"></i></span>
+  <div class="media-body">
+    <h5 class="mb-0 text-primary position-relative"><span class="bg-200 pr-3">Seleccione el trámite que desea solicitar</span>
+      <span class="border position-absolute absolute-vertical-center w-100 z-index--1 l-0"></span>
+    </h5>
+  </div>
+</div>
+
+<!-- <div class="card mb-3 overflow-hidden text-primary bg-dark mb-3">
+  <div class="bg-holder bg-card" style="background-image:url(assets/img/illustrations/corner-3.png);">
+  </div>
+  <div class="card-body position-relative text-white bg-primary mb-3">
+    <div class="display-4 fs-2 mb-2 font-weight-normal text-sans-serif text-white">
+      ¿Qué hay de nuevo?
+    </div>
+    <p>Bienvenido de vuelta, queremos que tengas la mejor experiencia en nuestra plataforma, por esa razón nos renovamos constantemente.
+      Hemos adaptado el proceso de solicitud para que se más sencillo y rápido.</p>
+    <p>
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#solicitudes" aria-expanded="false" aria-controls="multiCollapseExample2">Solicitudes</button>
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#requisitos" aria-expanded="false" aria-controls="multiCollapseExample2">Requisitos</button>
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#aranceles" aria-expanded="false" aria-controls="multiCollapseExample2">Aranceles</button>
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#responsables" aria-expanded="false" aria-controls="multiCollapseExample2">Responsables Solidarios</button>
+    </p>
+    <div class="row">
+      <div class="col-12">
+        <div class="collapse" id="solicitudes">
+          <div class="card card-body">
+            <font color="black">
+              Ahora podrás decidir cuando es que el municipio podrá ver tu "Solicitud".<br>
+              Una vez llenes el formulario y des click en "Guardar", se generar un registro sobre el cual podrás trabajar 
+              (Ver Aranceles, Requisitos, Responsables Solidarios), antes de "enviarlo" al mpio para iniciar su proceso.<br>
+              Esto reduce las posibilidades de que tu trámite sea rechazado, cancelado, debido a información incompleta o requisitos faltantes; 
+              esta "Solicitud" permanecerá en la bandeja "Solicitudes" mientras lo veas conveniente.
+              Una vez "envies" la solicitud, esta será movida a la bandeja "En proceso".
+            </font>
+            <font color="red">*La solicitudes "canceladas" serán eliminadas permanentemente y no serán accesibles nunca más, no podrán ser restauradas.</font>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="collapse" id="requisitos">
+          <div class="card card-body">
+            <font color="black">
+              Redirección directa a los requisitos luego de terminar tu formulario.<br>
+              Una vez llenes el formulario y des click en "Guardar", serás redirigido a la carga de documentos, el proceso funciona de 
+              la misma manera que versión anterior.<br>
+              Ahora contarás con ayuda de cuales requisitos son obligatorios, ademas de leyendas con especificaciones para cada requisito.<br>
+              Siempre podrás ver esta pantalla nuevamente desde el ménu de la solicitud en el listado de "solicitudes" o "en proceso".
+            </font>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="collapse" id="aranceles">
+          <div class="card card-body">
+            <font color="black">
+              Para hacer más sencilla la solicitud ahora los aranceles cuenta con su propio espacio.<br>
+              La administración de los aranceles cuenta con su espacio aislado para su gestión, podrás acceder a el desde el ménu en el listado de "solicitudes" o "en proceso".
+            </font>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="collapse" id="responsables">
+          <div class="card card-body">
+            <font color="black">
+              Para hacer más sencilla la solicitud ahora los responsables solidarios cuenta con su propio espacio.<br>
+              La administración de los responsables solidarios cuenta con su espacio aislado para su gestión, podrás acceder a el desde el ménu en el listado de "solicitudes" o "en proceso".
+            </font>
+          </div>
+        </div>
+      </div>
+    </div>      
+  </div>
+</div>  -->
+
+<div class="card">
+  <div class="card-body">
+    <div class="alert alert-info fade show" role="alert" ng-if="vm.showLicTypesFlag">
+      <strong>Importante</strong> Una vez generada la solicitud, esta <b>no</b> será enviada inmediatamente al departamento de Desarrollo Urbano, 
+      antes deberá completar toda la carga de requisitos e información relacionada.
+    </div>
+    <div class="alert alert-warning fade show" role="alert" ng-if="!vm.dUValidation">
+      Su acreditación dentro de la plataforma <strong>está vencida</strong>, por lo que no podrá realizar trámites, contacte con el Mpio. para resolver su situación.
+    </div>
+    <div class="alert alert-warning fade show" role="alert" ng-if="vm.utype == 9 && !vm.colValidation">
+      Su acreditación dentro de la plataforma por parte de su <strong>Colegio está vencida</strong>, contactelo para resolver su situación.
+    </div>    
+  </div>     
+</div><br>
+
+<div class="card" ng-init="vm.init()" >
+  <div class="card-body" ng-if="vm.showLicTypesFlag">
+    <div class="row">
+      <div class="col-sm-6" ng-repeat="item in vm.licenseTypes">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="licenseTypesRadios" id="licenseTypesRadios{{$index}}"
+            ng-click="vm.licenseType(item)">
+            <!--  style="font-size: 14px;" -->
+          <label class="form-check-label" for="licenseTypesRadios{{$index}}">
+            {{item.nombre}}
+            <b><br>{{item.nota}}</b>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><br>
+<form-component ng-if="vm.request" request="vm.request"></form-component>

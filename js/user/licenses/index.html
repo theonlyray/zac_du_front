@@ -1,0 +1,234 @@
+<div class="card-deck">
+  <div ng-repeat="count in vm.count" class="card mb-3 overflow-hidden {{count.class}}">
+    <!-- <div class="bg-holder bg-card" style="background-image:url(assets/img/illustrations/corner-3.png);">
+      ng-show="count.tipo != 'Corresponsabilidades'
+    </div> -->
+    <div class="card-body position-relative ">
+      <h6>{{count.type}}</h6>
+      <span class="badge badge-soft-primary rounded-capsule ml-2">{{count.items * 100 /
+        vm.total | number : 2 }}%</span>
+      <div class="display-4 fs-4 mb-2 font-weight-normal text-sans-serif text-primary">{{count.items}}</div>
+      <a href="#!tramites/{{count.type}}" class="stretched-link">Ver más
+        <span class="fas fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="card" ng-init="vm.init()">
+  <div class="card-header">
+    <div class="row ">
+      <div class="col-8">
+          <label for="tipo_tramite">Busqueda general.</label><br>
+          <input id="tipo_tramite" class="form-control form-control-sm" type="text" placeholder="Buscar..." ng-model="vm.filterText" autocomplete="false"/>        
+      </div>
+      <div class="col-4" ng-init="vm.data_page = 10">
+        <label for="cantidad">No. licencias por página <b>{{vm.data_page}}</b></label>
+        <select class="custom-select custom-select-sm ml-2" ng-model="vm.data_page" ng-options="item for item in vm.pageNumbers"></select>
+      </div>
+    </div>
+  </div>
+  <div class="card-body px-0 pt-0">
+    <div class="table-responsive mt-4 fs--1">
+      <table class="table table-striped border-bottom">
+        <thead class="bg-200 text-900">
+          <tr>
+            <th class="align-middle">
+              <label>{{vm.licStat == 'Solicitudes' ? 'Solicitud No.' : 'Folio'}}</label>
+            </th>
+            <th class="align-middle">Solicitante</th>
+            <!-- <th class="align-middle">Obra</th> -->
+            <!-- <th class="align-middle" ng-show="vm.status_lic == 'Corresponsabilidades'">Solicitante</th> -->
+            <th class="align-middle">M2</th>
+            <th class="align-middle">Domicilio</th>
+            <th class="align-middle">Propietario</th>
+            <th class="align-middle text-center">Estatus</th>
+            <th class="align-middle text-center">Validaciones</th>
+            <th class="align-middle text-center">Observaciones</th>
+            <th class="align-middle text-danger">Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="btn-reveal-trigger"
+            ng-repeat="item in vm.data_filter = (vm.licenses | filter : vm.filterText ).slice((vm.page -1) * vm.data_page, vm.page * vm.data_page)">
+            <!-- folio -->
+            <td class="align-middle">
+                <a>{{vm.licStat == 'Solicitudes' ? item.id : item.folio}}</a><br>
+                <!-- <p><b>{{item.cancellation.descripcion}}</b></p> -->
+                <span class="badge badge-light">
+                  {{item.license_type.nombre}}
+                  <br>{{item.license_type.nota}}
+                  <br>{{item.license_type.descripcion}}
+                </span>
+            </td>
+            <!-- solicitante -->
+            <td class="align-middle">
+              {{item.applicant.nombre}}<br>
+              {{item.applicant.correo}}<br>
+              {{item.applicant.applicant_data.celular}}
+            </td>
+            <!-- m2 -->
+            <td class="align-middle">{{item.construction.sup_total_amp_reg_const}}</td>
+            <!-- ubicacion -->
+            <td class="align-middle">{{item.property.calle}} {{ item.property.no }}<br>{{ item.property.colonia }}
+            </td>
+            <!-- propietario -->
+            <td class="align-middle">
+              {{item.owner.ocupacion}} {{item.owner.nombre_apellidos}}
+            </td>
+            <!-- estatus -->
+            <td class="align-middle text-center fs-0">            
+              <span class="badge badge rounded-capsule badge-soft-primary">
+                {{item.estatus}}<span class="ml-1 fas fa-info" data-fa-transform="shrink-2"></span>
+              </span><br>
+              <!-- fechas -->
+              <span class="badge badge rounded-capsule badge-soft-info">Fecha deregistro<br>
+                {{item.fecha_registro | date:"medium"}}<span class="ml-1 fas fa-play" data-fa-transform="shrink-2"></span>
+              </span><br>
+              <span class="badge badge rounded-capsule badge-soft-info">Fecha de última actualización.<br>
+                {{item.fecha_registro | date:"medium"}}<span class="ml-1 fas fa-play" data-fa-transform="shrink-2"></span>
+              </span><br>
+              <span ng-show="item.fecha_autorizacion" class="badge badge rounded-capsule badge-soft-info">
+                Fecha de autorizacion <br>
+                {{item.fecha_autorizacion | date:"medium"}}<span class="ml-1 fas fa-clock" data-fa-transform="shrink-2"></span>
+              </span>
+              <!-- fin fechas -->                    
+            </td>
+            <!-- validaciones -->
+            <td class="align-middle text-center fs-0">            
+              <span class="badge badge rounded-capsule badge-soft-primary" ng-repeat="val in item.validations">
+                {{val.descripcion}}<span class="ml-1 fas fa-info" data-fa-transform="shrink-2"></span><br>
+                {{val.created_at | date:"medium"}}<span class="ml-1 fas fa-clock" data-fa-transform="shrink-2"></span><br>
+                {{val.user.nombre}}<span class="ml-1 fas fa-user" data-fa-transform="shrink-2"></span><br>
+              </span><br>                  
+            </td>
+            <!-- observaciones -->
+            <td class="align-middle text-center fs-0">            
+              <span ng-repeat="obs in item.observations" class="badge badge rounded-capsule badge-soft-{{obs.solventada == true ? 'success' : 'warning'}}" >
+                {{obs.observaciones}}<span class="ml-1 fas fa-info" data-fa-transform="shrink-2"></span><br>
+                {{obs.created_at | date:"medium"}}<span class="ml-1 fas fa-clock" data-fa-transform="shrink-2"></span><br>
+                {{obs.user.nombre}}<span class="ml-1 fas fa-user" data-fa-transform="shrink-2"></span><br>
+              </span><br>                  
+            </td>
+            <!-- opciones -->
+            <td class="align-middle white-space-nowrap">
+              <div class="dropdown text-sans-serif">
+                <button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal mr-3" type="button"
+                  id="dropdown0" ng-click="vm.saveLic(item)" data-bs-toggle="dropdown" data-boundary="html"
+                  aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h fs--1"></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right border py-0" aria-labelledby="dropdown0">
+                  <div class="bg-white py-2">
+                    <!-- pdf -->
+                    <!-- <a class="dropdown-item" ng-click="vm.download(item.id)" ng-if="vm.status_lic != 'Solicitudes'">
+                      Descargar<span class="ml-1 fas fa-download" data-fa-transform="shrink-2"></span>
+                    </a>                    
+                    <a class="dropdown-item" ng-click="vm.download(item.id)" ng-if="vm.status_lic == 'Solicitudes'">
+                      Vista Previa<span class="ml-1 fas fa-download" data-fa-transform="shrink-2"></span>
+                    </a>                     -->
+                    <!-- fin pdfs -->                   
+                    <!-- <div class="dropdown-divider" ng-if="vm.licStat == 'Solicitudes'"></div> -->
+                    <a class="dropdown-item"  href="#!review">
+                      Revisar Formulario<span class="ml-1 fas fa-search"  data-fa-transform="shrink-2"></span>
+                    </a>
+                    <a class="dropdown-item text-warning" href="#!license_reqs">Requisitos
+                      <span class="far fa-images" data-fa-transform="shrink-2"></span></a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" ng-click="vm.orden(item.id)">Ficha de Pago PDF
+                      <span class="ml-1 far fas fa-cash-register" data-fa-transform="shrink-2"></span></a>
+                    <a class="dropdown-item text-primary" href="#!pago">Pago 
+                      <span class="far fa-credit-card" data-fa-transform="shrink-2"></span></a>
+                    <a class="dropdown-item text-primary" href="#!new_orden">Generar Ficha
+                      de Pago</a>
+                    <a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#cancelModal"
+                      ng-click="vm.saveLic(item)">
+                      Cancelar <span class="far fa-calendar-times" data-fa-transform="shrink-2"></span>
+                    </a>
+                    <a ng-if="vm.status_lic == 'Solicitudes'" class="dropdown-item text-primary" href="#!solidarios">
+                      Corresponsables <span class="fas fa-users" data-fa-transform="shrink-2"></span>
+                    </a>
+                    <a ng-if="vm.licStat == 'Solicitudes'" class="dropdown-item text-success" data-bs-toggle="modal" data-bs-target="#sendModal" ng-click="vm.saveLic(item)">
+                      Enviar Solicitud<span class="fas fa-paper-plane" data-fa-transform="shrink-2"></span>
+                    </a>
+                    <!-- <a class="dropdown-item text-info" data-toggle="modal" data-target="#historyModal" ng-click="vm.history()">
+                      Historial <span class="fas fa-history" data-fa-transform="shrink-2"></span>
+                    </a> -->
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <uib-pagination total-items="vm.data.length" ng-model="vm.page" max-size="6" boundary-link-numbers="true"
+        rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page="vm.data_page">
+      </uib-pagination>
+    </div>
+  </div>
+</div>
+<!-- modals -->
+<!-- enviar solicitud -->
+<div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sendModalLabel">Enviar la Solicitud No. {{vm.license.id}}</h5>
+        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="font-weight-light"
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p>Está a punto de generar la <b>{{vm.license.license_type.nombre}} {{vm.license.license_type.nota}}</b> con No. <b>{{vm.license.id}}</b>
+        <p>Asegurece de haber cargadado toda la información y requisitos necesarios, de no ser así el Mpio. podrá <b>rechazar</b> su solicitud.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" type="button" data-bs-dismiss="modal" ng-click="vm.changeStatus(1)">ENVIAR SOLICITUD</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- cancelacion -->
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelModalLabel">Cancelar trámite {{vm.license.folio}}</h5>
+        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="font-weight-light"
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p>Está a punto de <b>CANCELAR</b> el trámite <b>{{vm.license.type.descripcion}}</b> con el folio <b>{{vm.license.folio}}</b>.</p>
+        <b>Esta solicitud no podrá ser restaurada.</b>
+        <!-- <textarea class="form-control" ng-model="vm.license.motivo" rows="3" placeholder="Motivo de cancelación" required></textarea>
+        <input type="password" ng-model="vm.license.contrasenia" class="form-control mt-2" placeholder="Contraseña" required autocomplete="new-password"> -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cerrar</button>
+        <button class="btn btn-danger btn-sm" type="button" data-bs-dismiss="modal" ng-click="vm.changeStatus(14)">Cancelar trámite</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- historial -->
+<div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="historyModalLabel">Historial de trámite {{vm.folio}}</h5>
+        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="font-weight-light"
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li class="list-group-item" ng-repeat="item in vm.act_hist"><b>{{item.datee | date:'medium'}}</b><br> {{item.descripcion}}</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

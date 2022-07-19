@@ -1,0 +1,469 @@
+<div class="accordion" id="accordion">
+  <form ng-submit="$ctrl.sendReview()">
+    <!--  ng-init="item.iGroup = $index" -->
+    <div ng-repeat="item in $ctrl.form">
+      <div class="card">
+        <div class="card-header" id="heading{{$index}}">
+          <h2 class="mb-0">
+            <button class="btn btn-link btn-block text-center" type="button" data-toggle="collapse"
+              data-target="#collapse{{index}}" aria-expanded="true" aria-controls="collapse{{$index}}">
+              <b>{{item.group}}</b>
+            </button>
+          </h2>
+        </div>
+        <div id="collapse{{$index}}" class="collapse show" aria-labelledby="heading{{$index}}" data-parent="#accordion">
+          <div class="card-body">
+            <div class="row">
+              <div ng-repeat="field in item.fields" class="col-md-{{field.size}}">
+                <!-- map -->
+                <div class="form-group" ng-if="field.type == 99">
+                  <p>Ubicación Cargada</p>
+                    <div class="row" style="padding: 0 10px 0 10px;">
+                      <img class="card-img-top" src="http://127.0.0.1:8000/storage/app/{{$ctrl.license[item.iGroup].mapa_ubicacion}}" alt="ubicación">
+                    </div>
+                  <p>Para agregar la ubicación del predio, favor de mover el indicador y acercarlo a la ubicación
+                    exacta
+                  </p>
+                  <div id="map"></div>
+                  <div class="col-auto">
+                    <br>
+                    <button type="button" ng-click="$ctrl.aupdateMap()" class="btn btn-primary col-md-3">Actualiza Mapa</button>
+                  </div>
+                  <script async defer
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQrEDwfJBAKkOkf8-U2hCB9A6Nr6J6HJs&callback=initMap"
+                    type="text/javascript"></script>
+                </div>
+
+                <!-- text -->
+                <div class="form-group" ng-if="field.type == 1">
+                  <label for="im-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
+                  <input type="text" class="form-control" id="im-{{item.iGroup}}-{{$index}}"
+                    ng-model="$ctrl.license[item.iGroup][field.field]" minlength="{{field.length}}" required>
+                </div>
+
+                <!-- Number -->
+                <div class="form-group" ng-if="field.type == 2 && field.field != 'sup_total_amp_reg_const'">
+                  <label for="im-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
+                  <input type="number" class="form-control" id="im-{{item.iGroup}}-{{$index}}" 
+                    ng-model="$ctrl.license[item.iGroup][field.field]" 
+                    step="{{field.step}}" required>
+                </div>
+                <!-- intento de sumatoria -->
+                <div class="form-group" ng-if="field.type == 2 && field.field == 'sup_total_amp_reg_const'">
+                  <label for="im-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
+                  <input type="number" class="form-control" id="im-{{item.iGroup}}-{{$index}}" required disabled
+                    ng-value ="$ctrl.license[item.iGroup].sup_total_amp_reg_const = 
+                      $ctrl.license[item.iGroup].sotano + $ctrl.license[item.iGroup].sup_cons_pb + 
+                      $ctrl.license[item.iGroup].mezzanine + $ctrl.license[item.iGroup].primer_piso +
+                      $ctrl.license[item.iGroup].segundo_piso + $ctrl.license[item.iGroup].tercer_piso + 
+                      $ctrl.license[item.iGroup].cuarto_piso + $ctrl.license[item.iGroup].quinto_piso + 
+                      $ctrl.license[item.iGroup].sexto_piso + $ctrl.license[item.iGroup].descubierta"
+                      min="{{field.min}}" step="{{field.step}}">
+                    </div>
+                    <!-- ng-model = "$ctrl.license[item.iGroup][field.field] = field.value" -->
+                <!-- textarea -->
+                <div class="form-group" ng-if="field.type == 3">
+                  <label for="ta-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
+                  <textarea class="form-control" id="ta-{{item.iGroup}}-{{$index}}" rows="3" required
+                    ng-model="$ctrl.license[item.iGroup][field.field]"></textarea>
+                </div>
+
+                <!-- check -->
+                <div class="form-group" ng-if="field.type == 4">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="cc{{item.iGroup}}-{{$index}}" name="cc{{item.iGroup}}-{{$index}}"
+                      class="custom-control-input" ng-model="$ctrl.license[item.iGroup][field.field]" ng-init="$ctrl.license[item.iGroup][field.field] = false">
+                    <label class="custom-control-label" for="cc{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
+                  </div>
+                </div>
+
+                <!-- backgrounds table -->
+                <div class="form-group" ng-if="field.type == 98">
+                  <div class="card-deck">
+                    <div ng-repeat="table in $ctrl.license.backgrounds" class="card">
+                      <div class="card-header">
+                        <b>Antecedente No. {{$index + 1}}</b>
+                      </div>
+                      <div class="card-body">
+                        <div class="form-group">
+                          <div class="text-center mt-2">
+                            <h6 class="btn-link text-center">DATOS DE ANTECEDENTE</h6>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="form-{{item.iGroup}}-{{$index}}">No. Licencia Anterior</label>
+                              <input type="text" class="form-control" id="form-{{item.iGroup}}-{{$index}}"
+                                ng-model="$ctrl.license[item.iGroup][$index].prior_license_id" required>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="form-{{item.iGroup}}-{{$index}}">Fecha</label>
+                              <input type="date" class="form-control" id="form-{{item.iGroup}}-{{$index}}"
+                                ng-model="$ctrl.license[item.iGroup][$index].fecha" required>
+                            </div>
+                          </div>                          
+                        </div>
+                        <button class="btn btn-falcon-danger btn-sm" type="button"
+                          ng-click="$ctrl.deleteBackgrounds(table)">
+                          <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                          <span class="d-none d-sm-inline-block ml-1"> Eliminar Antecedente No.{{$index+1}}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div><br>
+                  <a class="btn btn-falcon-default btn-sm" type="button" ng-click="$ctrl.addBackgrounds()"><span
+                    class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span
+                    class="d-none d-sm-inline-block ml-1">Agregar
+                    Antecedente</span></a>
+
+                    Antecedentes actuales: {{$ctrl.license.backgrounds.length}}
+                </div>
+                <!-- eliminar de aqui al final --> 
+                <!-- radio -->                
+                <div class="form-group" ng-if="field.type == 333">
+                  <h6 class="btn-link text-center"><b>{{field.title}}</b></h6>
+                  <div class="custom-control custom-radio custom-control-inline" ng-repeat="tipos in field.options">
+                    <input type="radio" id="rd{{item.iGroup}}-{{field.campo}}-{{$index}}"
+                      name="cr{{item.iGroup}}" value="{{tipos.tipo}}" class="custom-control-input"
+                      ng-model="$ctrl.license[item.iGroup][field.campo]" required>
+                    <label class="custom-control-label"
+                      for="rd{{item.iGroup}}-{{field.campo}}-{{$index}}">{{tipos.tipo}}</label>
+                  </div>
+                </div>
+                <!--  -->
+                <!-- check -->
+                <div class="form-group" ng-if="field.type == 44">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="cc{{item.iGroup}}-{{$index}}" name="cc{{item.iGroup}}-{{$index}}"
+                      class="custom-control-input" ng-model="$ctrl.license[item.iGroup][field.campo]" ng-init="$ctrl.license[item.iGroup][field.campo] = false">
+                    <label class="custom-control-label" for="cc{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
+                  </div>
+                </div>
+                <!--  -->
+                <div class="form-group" ng-if="field.type == 5">
+                  <label for="dt-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
+                  <input class="form-control" ng-model="$ctrl.license[item.iGroup][field.campo]" required>
+                </div>
+                <!--  -->
+                <!-- Select -->
+                <div class="form-group" ng-if="field.type == 6">
+                  <h6 class="btn-link text-center"><b>{{field.title}}</b></h6>
+                  <select class="custom-select custom-select-sm mb-3" ng-model="$ctrl.license[item.iGroup][field.campo]" required>
+                    <option ng-repeat="tipos in field.estado" value="{{tipos.tipo}}">{{tipos.tipo}}</option>
+                  </select>
+                </div>
+                <!--  -->
+                <!-- Email -->
+                <div class="form-group" ng-if="field.tipo == 21">
+                  <label for="im-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
+                  <input type="email" class="form-control" id="im-{{item.iGroup}}-{{$index}}"
+                  ng-model="$ctrl.license[item.iGroup][field.campo]" minlength="{{field.length}}" required>
+                </div>
+                
+                
+                <div class="form-group" ng-if="field.type == 11">
+                  <div class="text-center mt-2"><small class="d-inline-block"></b>{{field.title}}</b>
+                    </small></div>
+                </div>
+                
+                <div class="form-group" ng-if="field.tipo == 13">
+                  <div class="text-center mt-2">
+                    <h6 class="btn-link text-center">{{field.title}}</h6>
+                  </div>
+                </div>
+                <div class="card" ng-if="field.tipo == 14">
+                  <div class="card-header">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="cc-{{item.iGroup}}-{{$index}}" name="cc{{$index}}"
+                        class="custom-control-input" ng-model="$ctrl.showFact">
+                      <label class="custom-control-label" for="cc-{{item.iGroup}}-{{$index}}">Seleccionar para
+                        facturación</label>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row" ng-if="$ctrl.showFact">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-nombre">Nombre de la persona física o moral</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-nombre"
+                            ng-model="$ctrl.license[item.iGroup].nombre_completo" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-nombre">R.F.C.</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-nombre"
+                            ng-model="$ctrl.license[item.iGroup].rfc" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-calle">Calle</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-calle"
+                            ng-model="$ctrl.license[item.iGroup].calle" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-colonia">Colonia</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-colonia"
+                            ng-model="$ctrl.license[item.iGroup].colonia" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-ciudad">Ciudad</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-ciudad"
+                            ng-model="$ctrl.license[item.iGroup].ciudad" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-estado">Estado</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-estado"
+                            ng-model="$ctrl.license[item.iGroup].estado" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-cp">C.P.</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-cp"
+                            ng-model="$ctrl.license[item.iGroup].cp" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-n_int">N° Int</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-n_int"
+                            ng-model="$ctrl.license[item.iGroup].n_int" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-n_ext">N° Ext</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-n_ext"
+                            ng-model="$ctrl.license[item.iGroup].n_ext" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-telefono">Telefono</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-telefono"
+                            ng-model="$ctrl.license[item.iGroup].telefono" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="im-{{item.iGroup}}-email">Correo Electrónico</label>
+                          <input type="text" class="form-control" id="im-{{item.iGroup}}-email"
+                            ng-model="$ctrl.license[item.iGroup].email" required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- SELECT -->
+                <div class="form-group" ng-if="field.tipo == 15">
+                  <h6 class="btn-link text-center">USO DE SUELO</h6>
+                  <select class="custom-select custom-select-sm mb-3" name="cc{{item.iGroup}}-{{$index}}" required
+                    ng-model="$ctrl.license[item.iGroup].uso_suelo" ng-init="$ctrl.license[item.iGroup].uso_suelo = 0">
+                    <option value=0 selected>NO APLICA</option>
+                    <option value=1>HABITACIONAL H1</option>
+                    <option value=2>HABITACIONAL H2</option>
+                    <option value=3>HABITACIONAL H2.5</option>
+                    <option value=4>HABITACIONAL H3</option>
+                    <option value=5>HABITACIONAL H3.5</option>
+                    <option value=6>HABITACIONAL H4</option>
+                    <option value=7>HABITACIONAL HD</option>
+                    <option value=8>ZONA COMERCIAL ZC</option>
+                    <option value=9>PARQUE URBANO PU</option>
+                    <option value=10>ÁREA VERDE AV</option>
+                    <option value=11>INDUSTRIAL LIGERA IL</option>
+                    <option value=12>INDUSTRIA MEDIA IM</option>
+                    <option value=13>URBANIZACIÓN Y/O INFRAESTRUCTURA</option>
+                  </select>
+                </div>
+                <!-- Tipo de anuncio -->
+                <div class="card" ng-if="field.tipo == 16">
+                  <h6 class="btn-link text-center">TIPO DE ANUNCIO</h6>
+                  <select class="custom-select custom-select-sm mb-3" name="cc{{item.iGroup}}-{{$index}}" required
+                    ng-model="$ctrl.license[item.iGroup].tipo_anuncio" ng-init="$ctrl.license[item.iGroup].tipo_anuncio = 0">
+                    <option value=0 selected>NO APLICA</option>
+                    <option value=1>AUTOSOPORTADO EN PEDESTAL</option>
+                    <option value=2>AUTOSOPORTADO EN PANTALLA ELECTRONICA</option>
+                    <option value=3>AUTOSOPORTADO EN AZOTEA</option>
+                    <option value=4>ROTULADO</option>                    
+                  </select>
+                </div>
+                <!--  -->
+                <div class="form-group" ng-if="field.tipo == 17">
+                  <div ng-repeat="table in $ctrl.tables" class="card dashboard-data-table">
+                    <div class="card-header">
+                      <div class="form-group">
+                        <div class="text-center mt-2">
+                          <h6 class="btn-link text-center">Datos de la especie {{$index + 1}}</h6>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <h6 class="btn-link text-center">Nombre de la especie</h6>
+                            <select class="custom-select custom-select-sm mb-3"
+                              ng-model="$ctrl.license[item.iGroup][$index].nombre_especie">
+                              <option value="1">huizache</option>
+                              <option value="2">huizache chino</option>
+                              <option value="3">pingüica</option>
+                              <option value="4">carrizo</option>
+                              <option value="5">jara</option>
+                              <option value="6">pata de vaca</option>
+                              <option value="7">lengua de vaca</option>
+                              <option value="8">pino casuarina</option>
+                              <option value="9">palo colorado, charin, chaquira</option>
+                              <option value="10">colorin</option>
+                              <option value="11">eucalipto, ocal</option>
+                              <option value="12">palo dulce, varaduz</option>
+                              <option value="13">fresno</option>
+                              <option value="14">palo blanco</option>
+                              <option value="15">casahuate</option>
+                              <option value="16">cazahuate</option>
+                              <option value="17">palo bobo</option>
+                              <option value="18">garambullo</option>
+                              <option value="19">tabachin</option>
+                              <option value="20">nopal</option>
+                              <option value="21">pino piñonero</option>
+                              <option value="22">siempre viva</option>
+                              <option value="23">mezquite</option>
+                              <option value="24">mezquite</option>
+                              <option value="25">Otro</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6" ng-show="$ctrl.license[item.iGroup][$index].nombre_especie == '25' ">
+                          <div class="form-group">
+                            <label for="form-{{item.iGroup}}-{{$index}}">Anota el nombre de la especie</label>
+                            <input type="text" class="form-control" id="form-{{item.iGroup}}-{{$index}}"
+                              ng-model="$ctrl.license[item.iGroup][$index].nombre_otro">
+                          </div>
+                        </div>
+                        <div class="col-md-6" ng-show="$ctrl.license[item.iGroup][$index].nombre_especie == '25' ">
+                          <div class="form-group">
+                            <label for="form-{{item.iGroup}}-{{$index}}">Nombre cientifico:</label>
+                            <input type="text" class="form-control" id="form-{{item.iGroup}}-{{$index}}"
+                              ng-model="$ctrl.license[item.iGroup][$index].cientifico_otro">
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <h6 class="btn-link text-center">Afectación</h6>
+                            <select class="custom-select custom-select-sm mb-3"
+                              ng-model="$ctrl.license[item.iGroup][$index].afectacion">
+                              <option value="Poda">Poda</option>
+                              <option value="Tala">Tala</option>
+                              <option value="Transplante">Transplante</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <h6 class="btn-link text-center">Altura</h6>
+                            <select class="custom-select custom-select-sm mb-3"
+                              ng-model="$ctrl.license[item.iGroup][$index].altura">
+                              <option value="1-5">1-5 metros</option>
+                              <option value="5-10">5-10 metros</option>
+                              <option value="10-15">10-15 metros</option>
+                              <option value="mayor a 15">mayor a 15 metros</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <h6 class="btn-link text-center">DAP (distancia a la altura del pecho)</h6>
+                            <select class="custom-select custom-select-sm mb-3"
+                              ng-model="$ctrl.license[item.iGroup][$index].diametro">
+                              <option value="0.5 a 1.0">0.5 a 1.0 metros</option>
+                              <option value="1 a 1.5">1 a 1.5 metros</option>
+                              <option value="1.5 a 2">1.5 a 2 metros</option>
+                              <option value="mayor a 2">mayor a 2 metros</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <h6 class="btn-link text-center">Número de Ramas (aproximado)</h6>
+                            <select class="custom-select custom-select-sm mb-3"
+                              ng-model="$ctrl.license[item.iGroup][$index].ramas">
+                              <option value="1-20">1-20</option>
+                              <option value="20-40">20-40</option>
+                              <option value="40-60">40-60</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="btn btn-falcon-danger btn-sm" type="button"
+                        ng-click="$ctrl.quitar_fraccion($index)">
+                        <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                        <span class="d-none d-sm-inline-block ml-1">Eliminar Especie {{$index+1}}</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <button class="btn btn-falcon-default btn-sm" type="button" ng-click="$ctrl.fracciones()"><span
+                        class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span
+                        class="d-none d-sm-inline-block ml-1">Agregar
+                        Especie</span></button> Espece(s) actual(es): {{$ctrl.tables.length}}
+                  </div>
+                </div>
+                <div class="form-group" ng-if="field.tipo == 18">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="cc-centro" name="cc-centro" class="custom-control-input"
+                      ng-model="$ctrl.centro">
+                    <label class="custom-control-label" for="cc-centro">Poligonal del centro
+                      histórico</label>
+                    <div class="row" ng-if="$ctrl.centro">
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="form-{{item.iGroup}}-{{$index}}">Número de oficio de autorización del Centro INAH
+                            Guanajuato</label>
+                          <input type="text" class="form-control" id="form-{{item.iGroup}}-{{$index}}"
+                            ng-model="$ctrl.license[item.iGroup][$index].sup_const" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="form-{{item.iGroup}}-fechainah">Fecha del oficio de autorización del Centro INAH
+                            Guanajuato</label>
+                          <input type="text" class="form-control" id="form-{{item.iGroup}}-fechainah"
+                            ng-model="$ctrl.license[item.iGroup][$index].sup_const" required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group" ng-if="field.tipo == 19">
+                  <div class="form-group" ng-if="$ctrl.license[item.iGroup][field.owner]">
+                    <label for="im-{{item.iGroup}}-{{$index}}">{{field.title}}</label>
+                    <input type="text" class="form-control" id="im-{{item.iGroup}}-{{$index}}"
+                      ng-model="$ctrl.license[item.iGroup][field.campo]" minlength="{{field.length}}" required>
+                  </div>
+                </div>
+                <div class="form-group" ng-if="field.tipo == 20">
+                  <a class="btn btn-sm btn-primary" href="{{field.url}}" target="_blank">{{field.title}}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-info col-md-5">GUARDAR INFORMACIÓN</button>
+      <!-- <button type="submit" class="btn btn-outline-success col-md-5" data-toggle="modal" data-target="#sendModal">ENVIAR SOLICITUD</button> -->
+    </div>
+  </form>
+</div>
