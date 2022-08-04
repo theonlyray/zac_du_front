@@ -12,11 +12,39 @@
 
         const licenseGroups = type => {
             switch (type) {
-                case 1 : return [location, construction_desc, construction_backgrounds, construction_owners, validity];
-                case 2 : return [location, construction_desc, construction_backgrounds, construction_owners, validity];
+                case 1 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 2 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 3 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 4 : return [location, construction_desc, construction_owners];
+                case 5 : return [location, construction_desc, construction_owners];
+                case 6 : return [announcement,location, construction_desc, construction_backgrounds, construction_owners];
+                case 7 : return [location, construction_owners];
+                case 8 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 9 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 10 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 11 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 12 : return [location, construction_owners];
+                case 13 : return [construction_backgrounds];
+                case 15 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 16 : return [location, construction_boundaries, construction_uses];
+                case 17 : return [ad_activity, ad_type_detached, ad_location, ad_desc, ad_validity];
+                case 18 : return [ad_activity, ad_type_structural, ad_location, ad_desc, ad_validity];
+                case 19 : return [ad_activity, ad_type_detached, ad_location, ad_desc, ad_validity];
+                case 20 : return [ad_activity, ad_type_vehicles, ad_desc, ad_validity];
+                case 24 : return [location, construction_owners];
+                case 25 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 26 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 27 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 28 : return [location, construction_desc, construction_backgrounds, construction_owners];
                 default:
                     break;
             }
+        };
+
+        const announcement = {
+            group: 'IMPORTANTE', iGroup:'announcement', fields: [
+                { title: 'Si su licencia fue autorizada a través de esta plataforma, podrá solicitar la prorroga en su bandeja de "AUTORIZADAS".', type: 7, size: 12, },
+            ]
         };
 
         const location = {
@@ -64,12 +92,14 @@
         };
         
         const construction_backgrounds = {
-            group: 'ANTECEDENTES', iGroup: 'backgrounds', fields: [{ title: 'tabla', field: 'antecedentes', type: 98, size: 12 }]
+            group: 'ANTECEDENTES', iGroup: 'backgrounds', fields: [
+                // { title: 'La licencia de referencia es física.', field: 'backgroundsPhysicalLicFlag', value: false, type: 4, size: 12},
+                { title: 'tabla', field: 'antecedentes', type: 98, size: 12 }]
         };
 
         const construction_owners = {
             group: 'DATOS DEL PROPIETARIO', iGroup: 'owner', fields: [
-                { title: 'Soy el propietario del predio. (Si ud. es el propietario los datos serán tomados de su perfil.)', field: 'ownerFlag', type: 4, size: 12},
+                // { title: 'Soy el propietario del predio. (Si ud. es el propietario los datos serán tomados de su perfil.)', field: 'ownerFlag', type: 4, size: 12, value: false},
                 { title: 'Nombre y apellidos', field: 'nombre_apellidos', type: 1, size: 8, value: 'N/A' },
                 { title: 'RFC', field: 'rfc', type: 1, size: 4, value: 'N/A' },
                 { title: 'Domicilio', field: 'domicilio', type: 1, size: 12, value: 'N/A' }, 
@@ -77,11 +107,115 @@
                 { title: 'Teléfono', field: 'telefono', type: 1, size: 6, value: 'N/A' },]
         };
         
-        const validity = {
-            group: 'VIGENCIA DE LA LICENCIA', iGroup: 'validity', fields: [
-                { title: 'Fecha de Inicio de Vigencia', field: 'fecha_autorizacion', type: 5, size: 5},
-                { title: 'Fecha de Fin de Vigencia', field: 'fecha_fin_vigencia', type: 5, size: 5},
-                { title: 'Días Totales', field: 'dias_total', type: 2, size: 2, value: 0 },
+        const ad_activity = {
+            group: 'ACTIVIDAD', iGroup: 'ad', fields: [
+                { title: 'Tipo de actividad', field: 'colocacion', type: 6, size: 12, options: [
+                    { title: 'Colocación', value: true, }, 
+                    { title: 'Renovación', value: false, },] },
+            ]
+        };
+        
+        const ad_type_detached = {
+            group: 'TIPO DE ANUNCIO', iGroup: 'ad', fields: [
+                { title: 'Tipo de anuncio', field: 'tipo', type: 6, size: 12, 
+                    options: [
+                        { title: 'Lona adosada a fachada', value: 'Lona adosada a fachada' }, 
+                        { title: 'Rótulo en barda o fachada', value: 'Rótulo en barda o fachada' }, 
+                        { title: 'Anuncio Luminoso adosado a fachada', value: 'Anuncio Luminoso adosado a fachada' },
+                        { title: 'Otro (Especificar en Desc. de Anuncio)', value: 'Otro' },
+                    ] 
+                },
+                { title: 'Cantidad', field: 'cantidad', type: 2, size: 3, value: 1, step: 1, min: 1 },
+                { title: 'Descripción del anuncio.', field: 'tipo_descripcion', type: 3, size: 8, value: 'N/A' },
+            ]
+        };
+        const ad_type_structural = {
+            group: 'TIPO DE ANUNCIO', iGroup: 'ad', fields: [
+                { title: 'Tipo de anuncio', field: 'tipo', type: 6, size: 12, 
+                    options: [                        
+                        { title: 'Anuncio Luminoso sobre poste', value: 'Anuncio Luminoso sobre poste' },
+                        { title: 'Anuncio Espectacular', value: 'Anuncio Espectacular' },
+                        { title: 'Pendones en luminaria', value: 'Pendones en luminaria' },
+                        { title: 'Otro (Especificar en Desc. de Anuncio)', value: 'Otro' },
+                    ] 
+                },
+                { title: 'Cantidad', field: 'cantidad', type: 2, size: 3, value: 1, step: 1, min: 1 },
+                { title: 'Descripción del anuncio.', field: 'tipo_descripcion', type: 3, size: 8, value: 'N/A' },
+            ]
+        };
+        const ad_type_vehicles = {
+            group: 'TIPO DE ANUNCIO', iGroup: 'ad', fields: [
+                { title: 'Tipo de anuncio', field: 'tipo', type: 6, size: 12, 
+                    options: [
+                        { title: 'Anuncios en vehículos', value: 'Anuncios en vehículos' },
+                        { title: 'Otro (Especificar en Desc. de Anuncio)', value: 'Otro' },
+                    ] 
+                },
+                { title: 'Cantidad', field: 'cantidad', type: 2, size: 3, value: 1, step: 1, min: 1 },
+                { title: 'Descripción del anuncio.', field: 'tipo_descripcion', type: 3, size: 8, value: 'N/A' },
+            ]
+        };
+        const ad_type = {
+            group: 'TIPO DE ANUNCIO', iGroup: 'ad', fields: [
+                { title: 'Tipo de anuncio', field: 'tipo', type: 6, size: 12, 
+                    options: [
+                        { title: 'Lona adosada a fachada', value: 'Lona adosada a fachada' }, 
+                        { title: 'Rótulo en barda o fachada', value: 'Rótulo en barda o fachada' }, 
+                        { title: 'Anuncio Luminoso adosado a fachada', value: 'Anuncio Luminoso adosado a fachada' },
+                        { title: 'Anuncio Luminoso sobre poste', value: 'Anuncio Luminoso sobre poste' },
+                        { title: 'Anuncio Espectacular', value: 'Anuncio Espectacular' },
+                        { title: 'Pendones en luminaria', value: 'Pendones en luminaria' },
+                        { title: 'Anuncios en vehículos', value: 'Anuncios en vehículos' },
+                        { title: 'Otro (Especificar en Desc. de Anuncio)', value: 'Otro' },
+                    ] 
+                },
+                { title: 'Cantidad', field: 'cantidad', type: 2, size: 3, value: 1, step: 1, min: 1 },
+                { title: 'Descripción del anuncio.', field: 'tipo_descripcion', type: 3, size: 8, value: 'N/A' },
+            ]
+        };
+
+        const ad_location = {
+            group: 'UBICACIÓN DEL PREDIO', iGroup:'property', fields: [
+                { title: 'mapa', type: 99, size: 12, },
+                { title: 'Calle', field: 'calle', type: 1, size: 9 }, 
+                { title: 'No. Oficial', field: 'no', type: 1, size: 3 }, 
+                { title: 'Colonia', field: 'colonia', type: 1, size: 9 },
+            ]
+        };
+
+        const ad_desc = {
+            group: `DESCRIPCIÓN DEL ANUNCIO`, iGroup: 'ad', fields: [
+                { title: 'Ancho (m)', field: 'largo', type: 2, size: 4, value: 0, step: 0.01, min: 0 }, 
+                { title: 'Largo (m)', field: 'ancho', type: 2, size: 4, value: 0, step: 0.01, min: 0 }, 
+                { title: 'Alto (m)', field: 'alto', type: 2, size: 4, value: 0, step: 0.01, min: 0 },
+                { title: 'Colores.', field: 'colores', type: 3, size: 6, value: 'N/A' },
+                { title: 'Texto.', field: 'texto', type: 3, size: 6, value: 'N/A' },
+            ]
+        };
+
+        const ad_validity = {
+            group: 'VIGENCIA DEL ANUNCIO', iGroup: 'ad', fields: [
+                { title: 'Fecha de Inicio de Vigencia', field: 'fecha_inicio', type: 5, size: 6},
+                { title: 'Fecha de Fin de Vigencia', field: 'fecha_fin', type: 5, size: 6},
+            ]
+        };
+
+        const construction_boundaries = {
+            group: 'COLINDANCIAS', iGroup: 'compatibility_certificate', fields: [
+                { title: 'Descripción de las colindancias', field: 'medidas_colindancia', type: 3, size: 12,  },
+                // { title: 'tabla', field: 'antecedentes', type: 97, size: 12 }
+            ]
+        };
+
+        const construction_uses = {
+            group: 'USO DEL PREDIO', iGroup: 'compatibility_certificate', fields: [
+                { title: 'Uso actual del predio', field: 'uso_actual', type: 3, size: 6,  },
+                { title: 'Uso propuesto', field: 'uso_propuesto', type: 3, size: 6, },    
+                { title: 'Usos Permitidos', field: 'usos_permitidos', type: 3, size: 6, },    
+                { title: 'Usos Prohibidos', field: 'usos_prohibidos', type: 3, size: 6, },    
+                { title: 'Usos Condicionales', field: 'usos_condicionales', type: 3, size: 6, },    
+                { title: 'Observaciones', field: 'observaciones', type: 3, size: 6, },    
+                { title: 'Restricciones', field: 'resticciones', type: 3, size: 6, }, 
             ]
         };
 

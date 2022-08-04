@@ -20,8 +20,8 @@
               <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#validationModal" href="#" 
                     ng-if="vm.canValidateEntry" ng-click="vm.setValLabels(0)" >Ingreso Validado</a></li>
-                <li><a class="dropdown-item" href="#" ng-click="vm.validations(2)" 
-                    ng-if="vm.canValidateEntry">Docs. con Observaciones</a></li>
+                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#rejectObsModal" href="#"
+                    ng-if="vm.canValidateEntry" ng-click="vm.setObsLabels(0)">Docs. con Observaciones</a></li>
                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#validationModal" href="#" 
                     ng-if="vm.canValidateFirst" ng-click="vm.setValLabels(1)" >Primer Etapa Validada</a></li>
                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#rejectObsModal" href="#" 

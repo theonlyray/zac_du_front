@@ -21,12 +21,20 @@
                     files: ['js/user/licenses/requirements/reqController.js']
                 },
                 {
+                    name: 'order',
+                    files: ['js/user/licenses/order/orderController.js']
+                },
+                {
                     name: 'users',
                     files: ['js/user/users/usersController.js']
                 },
                 {
                     name: 'roles',
                     files: ['js/user/roles/rolesController.js']
+                },
+                {
+                    name: 'departments',
+                    files: ['js/user/departments/depController.js']
                 },
                 {
                     name: 'units',
@@ -79,12 +87,22 @@
 				}
 			})
 			.when('/license_reqs', {
-				templateUrl: 'js/user/licenses/requirements/requirements.html',
+				templateUrl: 'js/user/licenses/requirements/index.html',
 				controller: 'reqController',
 				controllerAs: 'vm',
 				resolve: {
 					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
 						return $ocLazyLoad.load('requirements');
+					}]
+				}
+			})
+			.when('/orden', {
+				templateUrl: 'js/user/licenses/order/index.html',
+				controller: 'orderController',
+				controllerAs: 'vm',
+				resolve: {
+					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
+						return $ocLazyLoad.load('order');
 					}]
 				}
 			})
@@ -95,6 +113,16 @@
 				resolve: {
 					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
 						return $ocLazyLoad.load('users');
+					}]
+				}
+			})
+			.when('/departamentos', {
+				templateUrl: 'js/user/departments/index.html',
+				controller: 'depController',
+				controllerAs: 'vm',
+				resolve: {
+					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
+						return $ocLazyLoad.load('departments');
 					}]
 				}
 			})

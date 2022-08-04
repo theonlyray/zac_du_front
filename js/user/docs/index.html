@@ -4,32 +4,17 @@
             <div class="card-header">
                 <h5 class="mb-0">Lista de archivos</h5>
             </div>
-            <div class="card-body bg-light scrollbar" ng-repeat="file in vm.files">   
-                <div class="bg-light px-card py-3">
-                    <div class="d-inline-flex flex-column">                        
-                        <div class="border px-2 rounded-soft d-flex align-items-center">
-                            <span class="fs-1 far fa-file"></span><span class="ml-2">{{ file.nombre }}</span>
-                            <a class="text-300 p-1 ml-6" href="{{file.path_file}}" target="_blak" download><span
-                                    class="far fa-arrow-alt-circle-down"></span></a>
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="{{$index}}" ng-model="file.estatus">
-                                <label class="custom-control-label" for="{{$index}}">{{file.estatus == false ? 'Oculto' : 'Exhibido' }}</label>
-                            </div>                   
-                        </div>                        
-                        <div class="form-group">
-                            <label for="exampleFormControlTextarea1">Comentario | </label>
-                            <span class="badge badge rounded-capsule badge-soft-info">
-                                {{file.to_desc}}
-                            </span>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" ng-model="file.comentario"></textarea>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-danger" ng-click="vm.pd_file(1,file)">Eliminar</button>
-                            <button type="button" class="btn btn-primary" ng-click="vm.pd_file(0,file)">Guardar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="file in vm.files">
+                    {{ file.nombre }}
+                    <span class="badge bg-info rounded-pill white-text">{{ file.para == 1 ? "DROs" : "Particulares"}}</span>
+                    <a class="text-300 p-1 ml-6" href="http://127.0.0.1:8000{{file.url}}" target="_blak" download><span
+                        class="far fa-arrow-alt-circle-down"></span></a>
+                    <a class="text-300 p-1 ml-6" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                        ng-click="vm.setFile(file)">
+                        <span class="fas fa-backspace"></span></a>
+                </li>
+            </ul>
         </div>
     </div>
     <div class="col-lg-7 pl-lg-2">
@@ -39,21 +24,17 @@
                     <h5 class="mb-0">Cargar Archivos</h5>
                 </div>
                 <div class="card-body bg-light">
-                    <form ng-submit="vm.send_file(vm.archivo)">
+                    <form ng-submit="vm.sendFile(vm.file)">
                         <div class="row">
-                            <div class="col-lg-6">
-                                <label for="nombre">Descripción del archivo</label>
-                                <textarea class="form-control" id="nombre" type="text" ng-model="vm.archivo.comment"></textarea>
-                            </div>
                             <div class="col-lg-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="to" 
-                                        ng-model="vm.archivo.to" value="3">
-                                    <label class="form-check-label" for="to">Peritos</label>
+                                        ng-model="vm.to" value="true" ng-checked="{{vm.to}}">
+                                    <label class="form-check-label" for="to">DROs</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="to" 
-                                        ng-model="vm.archivo.to" value="4">
+                                        ng-model="vm.to" value="false">
                                     <label class="form-check-label" for="to">Particulares</label>
                                 </div>
                             </div>
@@ -64,7 +45,7 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-end">
-                                <button class="btn btn-primary" type="submit">Actualizar </button>
+                                <button class="btn btn-primary" type="submit">Cargar </button>
                             </div>
                         </div>
                     </form>
@@ -74,28 +55,23 @@
     </div>
 </div>
 
-<!-- Eliminar usuario -->
-<div class="modal fade" id="del_modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body p-4">
-                <div class="row text-left justify-content-between align-items-center mb-2">
-                    <div class="col-auto">
-                        <h5 id="modalLabel">Eliminar a {{vm.obra.nombre}}</h5>
-                    </div>
-                </div>
-                <form ng-submit="vm.del_obra()">
-                    <div class="form-row">
-                        <div class="form-group col-12">
-                            <input class="form-control" type="password" placeholder="Contraseña"
-                                ng-model="vm.password" required/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-primary btn-block mt-3" type="submit" name="submit">Eliminar</button>
-                    </div>
-                </form>
-            </div>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Eliminar archivo {{vm.file.nombre}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+            Esta apunto de eliminar el archivo {{vm.file.nombre}}, una vez eliminado este no podr&aacute; ser restaurado.<br>
+
+            <label for="pass">Contraseña</label>
+            <input type="password" id="pass" class="form-control" ng-model="vm.file.contrasenia" required>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" ng-click="vm.deleteFile(vm.file)">Eliminar</button>
+        </div>
+      </div>
     </div>
 </div>

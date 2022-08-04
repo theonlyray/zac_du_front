@@ -50,6 +50,12 @@
         
         const setLabel = roleId => {
             switch (roleId) {
+                case '2':
+                    vm.label = 'Dir. Departamento';
+                    break;
+                case '3':
+                    vm.label = 'Sub. Dir. Departamento';
+                    break;
                 case '4':
                     vm.label = 'Jefes de Unidad';
                     break;

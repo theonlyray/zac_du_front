@@ -24,32 +24,10 @@
                     name: 'profile',
                     files: ['js/applicant/profile/profileController.js']
                 },
-                //{
-                //     name: 'dutyspro',
-                //     files: ['js/applicant/licenses/duty_pro/dutyproController.js']
-                // },{
-                // },{
-                //     name: 'readDutyspro',
-                //     files: ['js/applicant/dutys_pro/dutysproController.js']
-                // },{
-                //     name: 'solidary',
-                //     files: ['js/applicant/licenses/solidary/solidaryController.js']
-                // },{
-                //     name: 'readSolidary',
-                //     files: ['js/applicant/solidary/solidaryController.js']
-                // },{
-                //     name: 'pay',
-                //     files: ['js/applicant/licenses/pay/payController.js']
-                // },{
-                //     name: 'docs_usr',
-                //     files: ['js/applicant/documents/documentsController.js']
-                // },{
-                //     name: 'profile',
-                //     files: ['js/applicant/profile/profileController.js']
-                // },{
-				// 	name: 'ticket',
-				// 	files: ['js/applicant/ticket/ticketController.js']
-				// },
+                {
+                    name: 'documents',
+                    files: ['js/applicant/docs/docsController.js']
+                },
             ]
 		});
 
@@ -103,97 +81,16 @@
 						return $ocLazyLoad.load('profile');
 					}]
 				}
+			}).when('/documentos', {
+				templateUrl: 'js/applicant/docs/index.html',
+				controller: 'docsController',
+				controllerAs: 'vm',
+				resolve: {
+					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
+						return $ocLazyLoad.load('documents');
+					}]
+				}
 			})
-            // .when('/aranceles', {
-            //     templateUrl: 'js/applicant/licenses/duty_pro/duty_pro.html',
-            //     controller: 'dutyproController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-            //             return $ocLazyLoad.load('dutyspro');
-            //         }]
-            //     }
-            // })
-            // .when('/consultar_aranceles', {
-            //     templateUrl: 'js/applicant/dutys_pro/duty_pro.html',
-            //     controller: 'dutysproController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-            //             return $ocLazyLoad.load('readDutyspro');
-            //         }]
-            //     }
-            // })
-            // .when('/solidarios', {
-            //     templateUrl: 'js/applicant/licenses/solidary/solidary.html',
-            //     controller: 'solidaryController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-            //             return $ocLazyLoad.load('solidary');
-            //         }]
-            //     }
-            // })
-            // .when('/corresponsables', {
-            //     templateUrl: 'js/applicant/solidary/solidary.html',
-            //     controller: 'solidaryController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-            //             return $ocLazyLoad.load('readSolidary');
-            //         }]
-            //     }
-            // })
-            // .when('/pago', {
-            //     templateUrl: 'js/applicant/licenses/pay/pay.html',
-            //     controller: 'payController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-            //             return $ocLazyLoad.load('pay');
-            //         }]
-            //     }
-            // })
-            // .when('/docs_usr', {
-            //     templateUrl: 'js/applicant/documents/documents.html',
-            //     controller: 'documentsController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-            //             return $ocLazyLoad.load('docs_usr');
-            //         }]
-            //     }
-            // })
-            // .when('/biblioteca', {
-            //     templateUrl: 'js/applicant/documents/library.html',
-            //     controller: 'documentsController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-            //             return $ocLazyLoad.load('docs_usr');
-            //         }]
-            //     }
-            // })
-            // .when('/profile', {
-            //     templateUrl: 'js/applicant/profile/profile.html',
-            //     controller: 'profileController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-            //             return $ocLazyLoad.load('profile');
-            //         }]
-            //     }
-            // })
-            // .when('/ticket', {
-			// 	templateUrl: 'js/applicant/ticket/ticket.html',
-			// 	controller: 'ticketController',
-			// 	controllerAs: 'vm',
-			// 	resolve: {
-			// 		loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-			// 			return $ocLazyLoad.load('ticket');
-			// 		}]
-			// 	}
-			// })
             .otherwise("/tramites/Proceso");            
     }
 

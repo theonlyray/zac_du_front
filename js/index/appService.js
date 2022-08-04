@@ -3,6 +3,7 @@
 
     function IndexService($cookies) {
         const vm = this;
+        // const url = 'http://api.ciczac.org/';
         const url = 'http://127.0.0.1:8000/';
 
         vm.axios = async ($method, path, form = null, $header = null) =>{

@@ -5,6 +5,8 @@
         const vm = this;
         vm.touch = false;
 
+        vm.foliosList = [];
+
         vm.canValidateEntry   = false;
         vm.canValidateFirst   = false;
         vm.canValidateSecond  = false;
@@ -51,6 +53,13 @@
 
             $window.sessionStorage.setItem('__lat', vm.license.property.latitud);
             $window.sessionStorage.setItem('__lng', vm.license.property.longitud);
+
+            const folios  = await usrService.axios('get', 'folios');
+            if (folios.status == 200) vm.foliosList = folios.data;
+            else vm.foliosList = [
+                {id:0, folio:'No hay licencias generadas'}
+            ];
+
             $scope.$digest();
         };
         
@@ -98,6 +107,10 @@
           
           vm.setObsLabels = flag => {
             switch (flag) {
+              case 0: 
+                vm.stepObsLabel = 'Agregar observaciones a los requisitos a ';
+                vm.statusInt = 2;
+                break;           
               case 1: 
                 vm.stepObsLabel = 'Agregar Obsercaciones en la primer revisión';
                 vm.statusInt = 6;            
@@ -119,7 +132,7 @@
                 vm.statusInt = 4;
                 break;
             }
-          };
+        };
     
           vm.observations = async flag => {
             if (vm.touch === false) {

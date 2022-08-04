@@ -58,9 +58,9 @@
             const response = await appService.axios('patch',`licencias/${licId}/validaciones`, vm.license);
             if (response.status === 200) {
                 toastr.success('Actualizado con exito');
-                vm.license = response.data;
                 $scope.$digest();
-            }else toastr.error(response.data.message);
+              }else toastr.error(response.data.message);
+              vm.init();
             vm.touch = false;
         } else toastr.warning('Proceso en ejecución, espera un momento');
       };

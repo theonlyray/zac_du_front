@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" ng-app="user" ng-controller="usrCtrl as vm">
 
-<head>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,9 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">  
     <link href="css/dashboard.theme.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/toastr.min.css" />
-    <!-- <link rel="stylesheet" type="text/css" href="styles/css/nprogress.css" />
-    <link rel="stylesheet" type="text/css" href="styles/css/custom-bar-props.css" /> -->
-    </head>
+    <link rel="apple-touch-icon" sizes="180x180" href="https://www.zacatecas.gob.mx/wp-content/uploads/2021/10/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.zacatecas.gob.mx/wp-content/uploads/2021/10/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.zacatecas.gob.mx/wp-content/uploads/2021/10/favicon.png">
+    <link rel="stylesheet" type="text/css" href="css/nprogress.css" />
+    <link rel="stylesheet" type="text/css" href="css/custom-bar-props.css" />
+  </head>
 
 <body ng-init="vm.me()">
   <main class="main" id="top">
@@ -26,7 +29,8 @@
                 </div>
                 <a class="navbar-brand">
                     <div class="d-flex align-items-center py-3">
-                        <img class="mr-2" src="https://consultas.licenciaszac.org/img/logo/cadro.jpg" alt="" width="40px" />
+                      <img class="mr-2" src="https://www.zacatecas.gob.mx/wp-content/uploads/2021/10/favicon.png" alt=""
+                      width="40px" />
                     </div>
                 </a>
             </div>
@@ -81,7 +85,9 @@
                             </a>
                             <ul class="nav collapse" id="users" data-bs-parent="#navbarVerticalCollapse">
                                 <li class="nav-item"><a class="nav-link" href="#!usuarios/5" ng-if="vm.utype <=4"><b>Colaboradores</b></a></li>                         
-                                <li class="nav-item"><a class="nav-link" href="#!usuarios/4" ng-if="vm.utype <=3"><b>Jefes de Unidad</b></a></li>                         
+                                <li class="nav-item"><a class="nav-link" href="#!usuarios/4" ng-if="vm.utype <=3"><b>Jefes de Unidad</b></a></li>                     
+                                <li class="nav-item"><a class="nav-link" href="#!usuarios/2" ng-if="vm.utype == 11"><b>Directores</b></a></li>                     
+                                <li class="nav-item"><a class="nav-link" href="#!usuarios/3" ng-if="vm.utype == 11"><b>Sub Directores</b></a></li>                     
                                 <li class="nav-item"><a class="nav-link" href="#!usuarios/9"><b>DROS</b></a></li>                         
                                 <li class="nav-item"><a class="nav-link" href="#!usuarios/10"><b>Particulares</b></a></li>                         
                             </ul>
@@ -90,7 +96,7 @@
                     <div class="navbar-vertical-divider px-0">
                       <hr class="navbar-vertical-hr my-3" />
                     </div>                    
-                    <ul class="navbar-nav flex-column" ng-if="vm.utype <=3">
+                    <ul class="navbar-nav flex-column" ng-if="vm.utype <=3 || vm.utype == 11">
                         <li class="nav-item">
                             <a class="nav-link dropdown-indicator" data-bs-target="#dep" data-bs-toggle="collapse" role="button"
                               aria-expanded="true" aria-controls="dep">
@@ -103,7 +109,17 @@
                             </a>
                             <!-- ng-show="vm.tipo === 'id_5ebafe3b361083.91981512' || vm.tipo === 3" -->
                             <ul class="nav collapse" id="dep" data-bs-parent="#navbarVerticalCollapse">
-                              <li class="nav-item">
+                              <li class="nav-item" ng-if="vm.utype == 11">
+                                <a class="nav-link" href="#!departamentos">
+                                  <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon">
+                                      <span class="fas fa-building"></span>
+                                    </span>
+                                    <span class="nav-link-text">Departamentos</span>
+                                  </div>
+                                </a>
+                              </li>
+                              <li class="nav-item" ng-if="vm.utype == 11">
                                 <a class="nav-link" href="#!roles">
                                   <div class="d-flex align-items-center">
                                     <span class="nav-link-icon">
@@ -243,7 +259,7 @@
                                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span
                                             class="fas fa-code-branch"></span></span><span class="nav-link-text">
                                         versión</span><span
-                                        class="badge badge-pill ml-2 badge-soft-primary">v2.1.2</span>
+                                        class="badge badge-pill ml-2 badge-soft-primary">v1.1.2</span>
                                 </div>
                             </a></li>
                     </ul>
@@ -280,8 +296,9 @@
             <footer>
                 <div class="row no-gutters justify-content-between fs--1 mt-4 mb-3">
                     <div class="col-12 col-sm-auto text-center">
-                        <p class="mb-0 text-600"><br class="d-sm-none" /> 2022 &copy; licenciaszac.org
-                        </p>
+                      <p class="mb-0 text-600">© Gobierno del Estado de Zacatecas <span class="d-none d-sm-inline-block">|
+                        </span><br class="d-sm-none" /> 2021 - 2027 &copy;
+                      </p>
                     </div>
                 </div>
             </footer>

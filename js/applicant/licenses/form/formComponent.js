@@ -6,27 +6,62 @@
         bindings: {
             request: '<',
         },
-        controller: function (appService, $window, appFactory) {
+        controller: function (appService, $window, appFactory, $scope) {
             const vm = this;
             vm.touch = false;
             
+            vm.foliosList = [
+                {id:0, folio:'No hay licencias generadas'}
+            ];
+
+            vm.sfdOptions = [
+                'Subdivición',
+                'Fución',
+                'Desmebración',
+            ];
+
             vm.$onChanges = (changes) => {
                 vm.myform = false;
                 vm.requestData = {};
                 vm.backgrounds = [];
+                vm.boundaries = [];
 
                 if (changes.request.currentValue != undefined) {
                     const payload = changes.request.currentValue;
                     vm.myform = true;
                     vm.typeId = payload.id;
                     vm.form = appFactory.formGroups(payload.id);
-                    // // console.log(vm.form);
+                    console.log(payload.id);
+
+                    if (payload.id == 22) {                        
+                        vm.requestData.sfd = { descripcion : vm.sfdOptions[0] };
+                    }
+                    getFolios();
                 }
+            };
+
+            //?get folio list
+            const getFolios = async () =>{
+                const response  = await appService.axios('get', 'folios');
+                if (response.status == 200) {
+                    vm.foliosList = response.data;
+                }
+                $scope.$digest();
             };
 
             //?background methods
             vm.addBackgrounds = () => { vm.backgrounds.push({}); };
-            vm.deleteBackgrounds = (index) => { vm.backgrounds.splice(index, 1); };
+            vm.deleteBackgrounds = (index) => { 
+                vm.backgrounds.splice(index, 1);
+                delete vm.requestData.backgrounds[index];
+            };
+            
+            //?boundaries methods
+            vm.addBoundaries = () => { vm.boundaries.push({}); };
+            vm.deleteBoundaries = (index) => { 
+                vm.boundaries.splice(index, 1);
+                delete vm.requestData.boundaries[index];
+            };
             
             vm.sendRequest = async() => {
                 if (vm.touch === false) {
@@ -37,92 +72,80 @@
                         vm.requestData.property.latitud  = $window.sessionStorage.getItem('__lat');
                         vm.requestData.property.longitud = $window.sessionStorage.getItem('__lng');                        
                         vm.requestData.property.mapa = await appFactory.getMapBASE64();
+                    }                    
+
+                    //? numbers in db, id license type
+                    if (vm.typeId <= 6 ||
+                        (vm.typeId >= 8 && vm.typeId <= 11) ||
+                        (vm.typeId == 13) || (vm.typeId == 15) ||
+                        (vm.typeId >= 25 && vm.typeId <= 28)
+                    ) {
+                        let backgroundsVerified = checkBackgrounds();
+                        if (!backgroundsVerified) return;
+                    }else if(vm.typeId >= 17 && vm.typeId <= 20){
+                        let adsVerified = checkAd();
                     }
-
-                    if (angular.isUndefined(vm.requestData.backgrounds)) vm.requestData.backgrounds = [ null ];             
-
+                    
+                    console.log(vm.requestData);
                     const response  = await appService.axios('post', 'licencias', vm.requestData);
+                    vm.touch = false;
 
                     if (response.status == 200){ 
                         toastr.success('Trámite generado con exito, cargue los documentos para continuar.');
                         $window.sessionStorage.setItem('__licId', response.data.id);
                         $window.location = "#!license_reqs";
-                    }else if (response.status == 422) toastr.warning(response.data.message);
-                    else toastr.error('Error en la solicitud, consulta con soporte. '. response.data.message);
-
+                    }else if (response.status == 422){ 
+                        toastr.warning(response.data.message);
+                        restoreFoliosBackgrounds();
+                    }
+                    else toastr.error(`Error en la solicitud,  ${response.data.message}`); 
+                    
                     vm.touch = false;
                 }else {
-                    toastrr.warning('El proceso a comenzado, espera un momento')
+                    toastr.warning('El proceso a comenzado, espera un momento')
                 }
             };
-        //     vm.new_tramite = async () => {
-        //         if (vm.touch === false) {
-        //             vm.touch = true;
-        //             try {
-        //                 // console.log(vm.my_tramite);
-        //                 let send = true;
-        //                 let is_can = ($window.sessionStorage.getItem('__is_can') == 'true');
-        //                 if (vm.my_tramite[0] === undefined) {
-        //                     // vm.my_tramite[0] = {};
-        //                     toastrr.warning('Debe seleccionar un trámite');
-        //                     send = false;
-        //                     vm.touch = false;
-        //                 }else{
-        //                     if (!angular.isUndefined(vm.my_tramite[0].para)){
-        //                         if (vm.my_tramite[0].para == 'Canalización' && !is_can){
-        //                             toastrr.warning('Sólo los peritos acreditados en Canalizaciones por el Mpio. pueden generar este tipo de tramites.');
-        //                             send = false;
-        //                             vm.touch = false;
-        //                         }
-        //                     }
-        //                 }
-                                                                    
-        //                 if (vm.form.length > 2 && vm.form[2].id_grupo == 2 && vm.form[2].tipo == 1) {
-        //                     const mapa = await myService.convertir_mapa()
-        //                     const fecha = myService.fecha_hora()
-        //                     vm.my_tramite[2].mapa = mapa;
-        //                     vm.my_tramite[2].mapa_nombre = `mapa_${fecha}.png`;
-        //                     console.log(vm.my_tramite);
-        //                 }
-        //                 const body = {
-        //                     tipo_tramite: vm.tipo_tramite, solicitud: vm.my_tramite,
-        //                     lat: $window.sessionStorage.getItem('__lat'), long: $window.sessionStorage.getItem('__lng')
-        //                 };
-        //                 // console.log(body);
-        //                 if (send) {
-        //                     const response = await myService.peticiones('post','Formalities/preload', body);
-        //                     // console.log(response.data);
-        //                     if (response.data.status == true) {
-        //                         $window.sessionStorage.setItem('__id_lic', response.data.id);
-        //                         $window.sessionStorage.setItem('__tipo', response.data.tipo_licencia);
-        //                         $window.sessionStorage.setItem('__type', 'solicitud');
 
-        //                         const res_docs = await myService.peticiones('post','Documents/formalitie', response.data);
-        //                         // console.log(res_docs);
-        //                         if (res_docs.data.status == true) toastrr.success('Datos guardados con éxito');
-        //                         else toastrr.warning('Problemas para guardar, contacte con soporte');                            
+            const checkBackgrounds = () => {
+                if (angular.isUndefined(vm.requestData.backgrounds) || angular.equals(vm.requestData.backgrounds, {})) vm.requestData.backgrounds = [ null ];             
+                else{
+                    for (const key in vm.requestData.backgrounds) {
+                        if(vm.requestData.backgrounds[key] != null && !angular.isUndefined(vm.requestData.backgrounds[key].prior_license_id)){
+                            let element = vm.foliosList.find(x => x.folio == vm.requestData.backgrounds[key].prior_license_id);
+                            if (angular.isUndefined(element)) {
+                                toastr.error('El folio de la licencia de antecente no existe, seleccione un valor correcto');
+                                vm.touch = false;
+                                return false;
+                            }
+                            else vm.requestData.backgrounds[key].prior_license_id = element.id;
+                        }
+                    }
+                }
+                return true;
+            };
 
-        //                         if (response.data.tipo_licencia == 'id_5eb6e201276057.09165433') $window.location = "#!aranceles";
-        //                         else $window.location = "#!tramite_documentos";
+            const restoreFoliosBackgrounds = () => {
+                if (angular.isUndefined(vm.requestData.backgrounds) || angular.equals(vm.requestData.backgrounds, {})) vm.requestData.backgrounds = [ null ];
+                else{
+                    for (const key in vm.requestData.backgrounds) {
+                        if(vm.requestData.backgrounds[key] != null && !angular.isUndefined(vm.requestData.backgrounds[key].prior_license_id)){
+                            let element = vm.foliosList.find(x => x.id == vm.requestData.backgrounds[key].prior_license_id);
+                            if (angular.isUndefined(element)) {
+                                toastr.error('El folio de la licencia de antecente no existe, seleccione un valor correcto');
+                                return false;
+                            }
+                            else vm.requestData.backgrounds[key].prior_license_id = element.folio;
+                        }
+                    }
+                }
+            };
 
-        //                     }else toastrr.warning('Problemas para guardar, contacte con soporte');
-        //                     vm.touch = false;
-        //                 }                        
-        //             } catch (error) {
-        //                 vm.touch = false;
-        //                 console.log(error);
-        //                 toastrr.error(error)
-        //             }
-        //         } else {
-        //             toastrr.warning('El proceso a comenzado, espera un momento')
-        //         }
-        //     }
+            const checkAd = () => {
+                vm.requestData.ad.colocacion = (vm.requestData.ad.colocacion == 'true');
+                if (vm.requestData.ad.tipo == 'Otro') vm.requestData.ad.tipo = vm.requestData.ad.tipo_descripcion;
+
+            };
         },
-        // resolve: {
-        //     loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
-        //         return $ocLazyLoad.load('extras-solicitud');
-        //     }]
-        // }
     };
 
     angular

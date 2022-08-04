@@ -6,6 +6,8 @@
         vm.touch = false;
         vm.lic = {};
 
+        vm.foliosList = [];
+
         vm.init = async () => {
             const licId = $window.sessionStorage.getItem('__licId');
             const response = await appService.axios('get',`licencias/${licId}`);        
@@ -17,7 +19,13 @@
 
             $window.sessionStorage.setItem('__lat', vm.license.property.latitud);
             $window.sessionStorage.setItem('__lng', vm.license.property.longitud);
-            // console.log(vm.solicitud);
+            
+            const folios  = await appService.axios('get', 'folios');
+            if (folios.status == 200) vm.foliosList = folios.data;
+            else vm.foliosList = [
+                {id:0, folio:'No hay licencias generadas'}
+            ];
+            
             $scope.$digest();
         };
 
@@ -34,6 +42,7 @@
                     toastr.success('Actualizado con exito');
                     $window.location = "#!tramites/Proceso";
                 }else toastr.error(response.data.message);
+                vm.init();
                 vm.touch = false;
             } else toastr.warning('Proceso en ejecución, espera un momento');
         };
@@ -55,6 +64,7 @@
                 vm.touch = false;
             } else toastr.warning('Proceso en ejecución, espera un momento');
         };
+        
 
         // vm.download_file = async () => {
         //     if (vm.touch === false) {

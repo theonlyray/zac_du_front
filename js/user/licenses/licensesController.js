@@ -10,10 +10,48 @@
         vm.data_page = vm.pageNumbers[0];
         vm.page = 1;
         //?
+        //?permission
+        vm.canValidateEntry   = false;
+        vm.canValidateFirst   = false;
+        vm.canValidateSecond  = false;
+        vm.canValidateThird   = false;
+        vm.canCreateOrder     = false;
 
         vm.utype = $window.sessionStorage.getItem('__utype');
+      
+        const sleep = ms => {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        };
+        
+        const getPermissions = async () => {
+            await sleep(2000);//sleep to wait usrService fill permissions array from profile request
+
+            let usrPermissionsArray = usrService.permissionsArray;
+
+            /**entry validation */
+            let canValidateEntry =  usrPermissionsArray.find(o => o.name === 'license.validateEntry');
+            if (angular.isDefined(canValidateEntry)) vm.canValidateEntry = true;
+            
+            /**first validation */
+            let canValidateFirst =  usrPermissionsArray.find(o => o.name === 'license.validateFirstReview');
+            if (angular.isDefined(canValidateFirst)) vm.canValidateFirst = true;
+            
+            /**second validation */
+            let canValidateSecond =  usrPermissionsArray.find(o => o.name === 'license.validateSecondReview');
+            if (angular.isDefined(canValidateSecond)) vm.canValidateSecond = true;
+            
+            /**third validation */
+            let canValidateThird =  usrPermissionsArray.find(o => o.name === 'license.validateThirdReview');
+            if (angular.isDefined(canValidateThird)) vm.canValidateThird = true;
+
+            let canCreateOrder =  usrPermissionsArray.find(o => o.name === 'order.store');
+            if (angular.isDefined(canCreateOrder)) vm.canCreateOrder = true;
+
+            $scope.$digest();
+        };
 
         vm.init = async () => {
+            getPermissions();
             vm.licStat = $routeParams.licStat;
 
             const count = await usrService.axios('get',`contador`);
@@ -44,201 +82,104 @@
             vm.license = license;
         };
 
-        vm.changeStatus = async flag => {
+        vm.validations = async flag => {
             if (vm.touch === false) {
                 vm.touch = true;
                 const licId = $window.sessionStorage.getItem('__licId');
     
                 vm.license.estatus = flag;
                 
-                const response = await usrService.axios('patch',`licencias/${licId}`, vm.license);
+                const response = await usrService.axios('patch',`licencias/${licId}/validaciones`, vm.license);
                 if (response.status === 200) {
                     toastr.success('Actualizado con exito');
+                    vm.license = response.data;
                     vm.init();
+                    $scope.$digest();
                 }else toastr.error(response.data.message);
                 vm.touch = false;
             } else toastr.warning('Proceso en ejecución, espera un momento');
         };
-        /*
-        vm.pro_type = ($window.sessionStorage.getItem('utipo') == 4);
-        vm.__ustate = ($window.sessionStorage.getItem('__ustate') == 'true');
-        vm.uid = $window.sessionStorage.getItem('__uid');      
-
-        //FIO
-        vm.btn_fio = 'active';        
-        //cotizacion
-        vm.btn_cot = '';
-        const preset = () => {
-            vm.tipo_lic = Number($window.sessionStorage.getItem('__tipo_lic'));
-            
-            switch (vm.tipo_lic) {
-                case 1:  vm.btn_fio = 'active'; vm.btn_cot = ''; break;
-                case 2:  vm.btn_fio = ''; vm.btn_cot = 'active'; break;            
-                default: vm.btn_fio = 'active'; vm.btn_cot = ''; break;
+    
+        vm.setValLabels = flag => {
+            switch (flag) {
+              case 0: 
+                vm.stepValLabel = 'validar el ingreso';
+                vm.statusInt = 4;
+                break;
+              case 1: 
+                vm.stepValLabel = 'validar la primer revisión';
+                vm.statusInt = 5;            
+                break;
+              case 2: 
+                vm.stepValLabel = 'validar la segunda revisión'; 
+                vm.statusInt = 7;
+                break;
+              case 3: 
+                vm.stepValLabel = 'validar la tercer revisión'; 
+                vm.statusInt = 9;
+                break;
+              default: 
+                vm.stepValLabel = 'No option selected'; 
+                vm.statusInt = 4;
+                break;
             }
-        }
-
-        vm.init = async () => {
-            preset();
-            vm.totalDebt =  vm.totalM2 = 0;
-            vm.status_lic = $routeParams.tipo;
-            let status;
-            switch (vm.status_lic) {
-                case 'Solicitudes':         status = 0; break;
-                case 'Generadas':           status = 1; break;
-                case 'Canceladas':          status = 2; break;
-                case 'Corresponsabilidades':  status = 3; break;
-                default: status = 1; break;            
+        };
+          
+        vm.setObsLabels = flag => {
+            switch (flag) {
+              case 0: 
+                vm.stepObsLabel = 'Agregar observaciones a los requisitos a ';
+                vm.statusInt = 2;
+                break;           
+              case 1: 
+                vm.stepObsLabel = 'Agregar Obsercaciones en la primer revisión';
+                vm.statusInt = 6;            
+                break;
+              case 2: 
+                vm.stepObsLabel = 'Agregar Obsercaciones en la segunda revisión'; 
+                vm.statusInt = 8;
+                break;
+              case 3: 
+                vm.stepObsLabel = 'Agregar Obsercaciones en la tercer revisión'; 
+                vm.statusInt = 10;
+                break;
+              case 4: 
+                vm.stepObsLabel = 'Rechazar'; 
+                vm.statusInt = 16;
+                break;
+              default: 
+                vm.stepObsLabel = 'No option selected'; 
+                vm.statusInt = 4;
+                break;
             }
-            $window.sessionStorage.setItem('__estatus_lic',vm.status_lic);
-            const counter  = await usrService.axios('get',`contador`);
-            const response = await usrService.axios('get',`licencias?type=${vm.tipo_lic}&status=${status}`);
-                        
-            vm.contados = setClassCounter(counter.data,status);
-            vm.data = response.data;
-
-            if (response.status == 200 && (status == 1)) getTotals(vm.data);            
-            if (response.status == 200 && (status == 3)) getCoresponsiblesData(vm.data);
-
-            vm.page = 1;
-            $scope.$digest();
         };
 
-        function setClassCounter(data,status){
-            vm.total = data.Total;                        
-            let contados = [ 
-                {tipo : 'Solicitudes',  items: data.Solicitudes, class: ''}, 
-                {tipo : 'Generadas',    items: data.Generadas, class: ''}, 
-                {tipo : 'Canceladas',   items: data.Canceladas, class: ''}, 
-                {tipo : 'Corresponsabilidades', items: data.Corresponsabilidades, class: ''} 
-            ];
-            switch (status) {
-                case 0: contados[0].class = 'text-white bg-info'; break;
-                case 1: contados[1].class = 'text-white bg-info'; break;
-                case 2: contados[2].class = 'text-white bg-info'; break;
-                case 3: contados[3].class = 'text-white bg-info'; break;        
-                default: contados[1].class = 'text-white bg-info'; break;
-            }
-            return contados                      
-        }
-
-        const getTotals = data =>{            
-            for (const element of data) {                
-                vm.totalM2    += element.construction.sup_cons_total;                
-                if (element.breakdown[0].validada == false) {                    
-                    vm.totalDebt  += element.breakdown[0].cuota;
-                }
-            }
-        }
-        
-        const getCoresponsiblesData = data =>{
-            for (const element of data) {
-                console.log(element.breakdown.filter(breakdown => breakdown.debtor_id == vm.uid));
-                element.coresponsblesBreakdowns = element.breakdown.filter(breakdown => breakdown.debtor_id == vm.uid);
-                for (const item of element.coresponsblesBreakdowns) {
-                    if (item.validada == false) {                    
-                        vm.totalDebt  += item.cuota;
-                    }
-                }
-            }
-        }
-
-        vm.save_lic = item => { $window.sessionStorage.setItem('__id_lic', item.id); };
-
-        vm.saveLic = async license => { vm.license  = license; }
-
-        vm.solicitud = async id => {
+        vm.observations = async flag => {
             if (vm.touch === false) {
                 vm.touch = true;
-                const id_lic = $window.sessionStorage.getItem('__id_lic');
-                const response = await usrService.axios('get',`PdfV2/license/${id_lic}`);
-                console.log(response);
-                if (response != false) {
-                    window.open(`pdfs/public_pdfs/FIO.php`, '_blank');
-                    vm.touch = false;
-                } else {
-                    vm.touch = false;
-                    console.log('algo salio mal');
-                }
-                vm.touch = false;
-            } else toastr.warning('proceso en ejecucíon, espera un momento');
-        }
-
-        vm.send = async flag => {
-            if (vm.touch === false) {
-                vm.touch = true;
+                const licId = $window.sessionStorage.getItem('__licId');
+    
                 vm.license.estatus = flag;
                 
-                const id_lic = $window.sessionStorage.getItem('__id_lic');
-                const response = await usrService.axios('patch',`licencias/${id_lic}`, vm.license);
-                
-                console.log(response);
-                if (angular.equals(response.status, 200) && flag ==  1) {
-                    toastr.success('Folio Generado Correctamente');
-                    $window.location = "#!tramites/Generadas";
-                }
-                else if (angular.equals(response.status, 200) && flag ==  2) {
-                    toastr.success('Folio Cancelado');
-                    $window.location = "#!tramites/Canceladas";
-                }
+                const response = await usrService.axios('patch',`licencias/${licId}/observaciones`, vm.license);
+                if (response.status === 200) {
+                    toastr.success('Actualizado con exito');
+                    vm.license = response.data;
+                    vm.init();
+                    $scope.$digest();
+                }else toastr.error(response.data.message);
                 vm.touch = false;
-            } else toastr.warning('Proceso en ejecución, espera un momento por favor');                    
-        }
+            } else toastr.warning('Proceso en ejecución, espera un momento');
+        };
 
-        // vm.history = async () => {
-        //     const id_lic = $window.sessionStorage.getItem('__id_lic');
-        //     const response = await usrService.axios('get',`Activities/activities_lic/${id_lic}/`);
-        //     // console.log(response);
+        vm.pdf = async () => {
 
-        //     if (!angular.isUndefined(response.data.status)) {
-        //         vm.act_hist = response.data.data;
-        //         console.log(vm.act_hist);
-        //         $scope.$digest();          
-        //     }else{
-        //         // log
-        //     }
-        // }
-
-        // vm.statics = async () => {
-        //     if (vm.touch === false) {
-        //         vm.touch = true;
-        //         const response = await usrService.req_rep('get',`Backups/statistics`);
-
-        //         console.log(response.data);
-        //         if (response !== false) {
-        //             const url = window.URL.createObjectURL(new Blob([response.data]));
-        //             const link = document.createElement('a');
-        //             link.href = url;
-        //             link.setAttribute('download', `statics.xlsx`);
-        //             document.body.appendChild(link);
-        //             link.click();
-        //             vm.init();                 
-        //         }
-        //         vm.touch = false;                   
-        //     } else toastr.warning('proceso en ejecucíon, espera un momento');
-        // }
-
-        vm.download= async id =>{
-            let duties = await usrService.axios('get',`licencias/${id}/pdf`,{},0,1);
-            console.log(duties);
-			let fileURL = window.URL.createObjectURL(duties.data);
-			$window.open(fileURL, '_blank');
-            vm.touch = false;
-        }
-
-        vm.cambiar_tipo = data =>{
-            $window.sessionStorage.setItem('__tipo_lic', data);
-            vm.init();
-        }
-
-        vm.confirmation = async license =>{
-            let response = await usrService.axios('patch',`licencias/${license.id}/confirmation`,{},0,1);
-            if (response.status == 200) {
-                toastr.success('Confirmación de corresponsabilidad exitosa');
-                vm.init();
-            }
-        }
-        */
+          let response = await usrService.axios('get',`licencias/${vm.license.id}/licencia`, null, 1);
+          console.log(response);
+          let fileURL = window.URL.createObjectURL(response.data);
+          $window.open(fileURL, '_blank');
+          vm.touch = false;
+        };
     }
 
     angular

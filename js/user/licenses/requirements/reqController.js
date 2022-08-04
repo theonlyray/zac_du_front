@@ -10,7 +10,7 @@
       vm.canValidateEntry   = false;
       vm.canValidateFirst   = false;
       vm.canValidateSecond  = false;
-      vm.canValidateThird   = false;
+      vm.canValidateThird   = false;      
 
       vm.statusInt = 4; //?status value to send in changeStatus method
       
@@ -37,7 +37,7 @@
         
         /**third validation */
         let canValidateThird =  usrPermissionsArray.find(o => o.name === 'license.validateThirdReview');
-        if (angular.isDefined(canValidateThird)) vm.canValidateThird = true;
+        if (angular.isDefined(canValidateThird)) vm.canValidateThird = true;                
         $scope.$digest();
       };
 
@@ -144,6 +144,10 @@
       
       vm.setObsLabels = flag => {
         switch (flag) {
+          case 0: 
+            vm.stepObsLabel = 'Agregar observaciones a los requisitos a ';
+            vm.statusInt = 2;
+            break;           
           case 1: 
             vm.stepObsLabel = 'Agregar Obsercaciones en la primer revisión';
             vm.statusInt = 6;            
@@ -183,6 +187,22 @@
             vm.touch = false;
         } else toastr.warning('Proceso en ejecución, espera un momento');
       };
+
+      vm.changeStatus = async flag => {
+        if (vm.touch === false) {
+            vm.touch = true;
+            const licId = $window.sessionStorage.getItem('__licId');
+
+            vm.license.estatus = flag;
+            
+            const response = await usrService.axios('patch',`licencias/${licId}`, vm.license);
+            if (response.status === 200) {
+                toastr.success('Actualizado con exito');
+                vm.init();
+            }else toastr.error(response.data.message);
+            vm.touch = false;
+        } else toastr.warning('Proceso en ejecución, espera un momento');
+    };
     }
   
     angular

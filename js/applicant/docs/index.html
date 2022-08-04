@@ -1,0 +1,18 @@
+<div class="row no-gutters" ng-init="vm.init()">
+    <div class="col-lg-5 pr-lg-2">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Lista de archivos</h5>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="file in vm.files">
+                    <b>{{ file.college == null ? 'De Mpio.' : 'De Colegio'}}</b><br>
+                    {{ file.nombre }}
+                    <!-- <span class="badge bg-info rounded-pill white-text">{{ file.para == 1 ? "DROs" : "Particulares"}}</span> -->
+                    <a class="text-300 p-1 ml-6" href="http://127.0.0.1:8000{{file.url}}" target="_blak" download><span
+                        class="far fa-arrow-alt-circle-down"></span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
