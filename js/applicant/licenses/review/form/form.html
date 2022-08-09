@@ -19,7 +19,9 @@
                 <div class="form-group" ng-if="field.type == 99">
                   <p>Ubicación Cargada</p>
                     <div class="row" style="padding: 0 10px 0 10px;">
-                      <img class="card-img-top" src="http://127.0.0.1:8000/storage/app/{{$ctrl.license[item.iGroup].mapa_ubicacion}}" alt="ubicación">
+                      <img class="card-img-top" src="http://api.ciczac.org/storage/app/{{$ctrl.license[item.iGroup].mapa_ubicacion}}" 
+                        width="80%"
+                        alt="ubicación">
                     </div>
                   <p>Para agregar la ubicación del predio, favor de mover el indicador y acercarlo a la ubicación
                     exacta
@@ -27,7 +29,7 @@
                   <div id="map"></div>
                   <div class="col-auto">
                     <br>
-                    <button type="button" ng-click="$ctrl.aupdateMap()" class="btn btn-primary col-md-3">Actualiza Mapa</button>
+                    <button type="button" ng-click="$ctrl.updateMap()" class="btn btn-primary col-md-3">Actualiza Mapa</button>
                   </div>
                   <script async defer
                     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQrEDwfJBAKkOkf8-U2hCB9A6Nr6J6HJs&callback=initMap"
@@ -152,6 +154,22 @@
                     Antecedente</span></a>
 
                     Antecedentes actuales: {{$ctrl.license.backgrounds.length}}
+                </div>
+
+                <!-- alert -->
+                <div class="form-group" ng-if="field.type == 7">
+                  <div class="alert alert-primary" role="alert">
+                    {{field.title}}
+                  </div>
+                </div>
+
+                <!-- SELECT sfd-->
+                <div class="form-group" ng-if="field.type == 8">
+                  <h6 class="btn-link text-center">{{fielt.title}}</h6>
+                  <select class="custom-select custom-select-sm mb-3" name="cc{{iGroup}}-{{$index}}" required
+                    ng-model="$ctrl.license[item.iGroup][field.field]"
+                    ng-options="item for item in $ctrl.sfdOptions">
+                  </select>
                 </div>
               </div>
             </div>

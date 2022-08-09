@@ -14,6 +14,12 @@
       vm.touch = false;
       vm.tables = [];      
 
+      vm.sfdOptions = [
+        'Subdivición',
+        'Fución',
+        'Desmebración',
+      ];
+
       vm.$onChanges = (changes) => {
         vm.myform = false;
         vm.licenseData = {};
@@ -28,10 +34,16 @@
             vm.form = appFactory.formGroups(payload.license_type_id);
 
             //?setting coor to map
-            sessionStorage.setItem('__lat', vm.license.property.latitud);
-            sessionStorage.setItem('__lng', vm.license.property.longitud);
+            // if (vm.license.property !== null) {
+            //   sessionStorage.setItem('__lat', vm.license.property.latitud);
+            //   sessionStorage.setItem('__lng', vm.license.property.longitud); 
+            // }            
             
-            if (payload.license_type_id <= 2) {
+            if (vm.license.license_type_id <= 2 ||
+              (vm.license.license_type_id >= 8 && vm.license.license_type_id <= 11) ||
+              (vm.license.license_type_id == 13) || (vm.license.license_type_id == 15) ||
+              (vm.license.license_type_id >= 25 && vm.license.license_type_id <= 28)
+            ) {
               vm.license.backgrounds = castBackgroundDates(vm.license.backgrounds);
             }else if (payload.license_type_id >= 17 && payload.license_type_id <= 20){
               vm.license.ad = castAdDates(vm.license.ad);
@@ -112,7 +124,11 @@
 
           vm.license.estatus = statusMutator(vm.license.estatus);
 
-          if (vm.license.license_type_id <= 2) {
+          if (vm.license.license_type_id <= 2 ||
+            (vm.license.license_type_id >= 8 && vm.license.license_type_id <= 11) ||
+            (vm.license.license_type_id == 13) || (vm.license.license_type_id == 15) ||
+            (vm.license.license_type_id >= 25 && vm.license.license_type_id <= 28)
+          ) {
             let backgroundsVerified = checkBackgrounds();
             if (!backgroundsVerified) return;
           }else if(vm.license.license_type_id >= 17 && vm.license.license_type_id <= 20){
@@ -188,14 +204,20 @@
         const licId = $window.sessionStorage.getItem('__licId');
 
         const response = await appService.axios('patch',`licencias/${licId}/mapa`, {mapa : mapa});
-          if (response !== false) {
+          if (response.status == 200) {
             toastr.success('Mapa actualizado con éxito');
             vm.touch = false;
-            $window.location.reload();
-          } else vm.touch = false;
+            // $window.location.reload();
+          } else if (response.status == 422){ 
+            toastr.warning(response.data.message);
+            restoreFoliosBackgrounds();
+          }
+          else toastr.error(`Error en la solicitud,  ${response.data.message}`);
           $scope.$digest();
+          vm.touch = false;
         } else vm.touch = false;
-      }
+        
+      };
     },
     resolve: {
       loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
@@ -211,35 +233,36 @@
 
 var marker;
 function initMap() {
-  var myLatlng = new google.maps.LatLng(sessionStorage.getItem("__lat"), sessionStorage.getItem("__lng"));
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 15,
-    center: myLatlng,
-    mapTypeId: "satellite",
-  });
-  var infoWindow = new google.maps.InfoWindow({ map: map });
-  // Try HTML5 geolocation.
-  var marker = new google.maps.Marker({
-    position: myLatlng,
-    map: map,
-    draggable: true,
-    animation: google.maps.Animation.DROP,
-    title: 'Ubicación del predio'
-  });
+  if (document.getElementById('map') !== null) {
+    var myLatlng = new google.maps.LatLng(sessionStorage.getItem("__lat"), sessionStorage.getItem("__lng"));
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 15,
+      center: myLatlng,
+      mapTypeId: "satellite",
+    });
+    var infoWindow = new google.maps.InfoWindow({ map: map });
+    // Try HTML5 geolocation.
+    var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      draggable: true,
+      animation: google.maps.Animation.DROP,
+      title: 'Ubicación del predio'
+    });
 
-  google.maps.event.addListener(marker, 'dragend', function (evt) {   
-    sessionStorage.setItem('__lat', evt.latLng.lat());
-    sessionStorage.setItem('__lng', evt.latLng.lng());
-    // document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
-  });
+    google.maps.event.addListener(marker, 'dragend', function (evt) {   
+      sessionStorage.setItem('__lat', evt.latLng.lat());
+      sessionStorage.setItem('__lng', evt.latLng.lng());
+      // document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+    });
 
-  google.maps.event.addListener(marker, 'dragstart', function (evt) {
-    // document.getElementById('current').innerHTML = '<p>Currently dragging marker...</p>';
-  });
+    google.maps.event.addListener(marker, 'dragstart', function (evt) {
+      // document.getElementById('current').innerHTML = '<p>Currently dragging marker...</p>';
+    });
 
-  marker.addListener('click', toggleBounce);
-  marker.setMap(map);
-
+    marker.addListener('click', toggleBounce);
+    marker.setMap(map);
+  }
 }
 
 function toggleBounce() {

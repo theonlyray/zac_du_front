@@ -33,7 +33,9 @@
       <table class="table table-striped border-bottom">
         <thead class="bg-200 text-900">
           <tr>
-            <th class="align-middle"><label>Folio</label></th>
+            <th class="align-middle">
+              <label>{{vm.licStat == 'Solicitudes' ? 'Solicitud No.' : 'Folio'}}</label>
+            </th>
             <th class="align-middle">Solicitante</th>
             <th class="align-middle">Domicilio</th>
             <th class="align-middle">Propietario</th>
@@ -49,6 +51,7 @@
             <!-- folio -->
             <td class="align-middle">
                 <a>{{vm.licStat == 'Solicitudes' ? item.id : item.folio}}</a><br>
+                <!-- <p><b>{{item.cancellation.descripcion}}</b></p> -->
                 <span class="badge badge-light">
                   {{item.license_type.nombre}}
                   <br>{{item.license_type.nota}}
@@ -170,12 +173,20 @@
                       <span class="far fa-credit-card" data-fa-transform="shrink-2"></span></a>
                     <a class="dropdown-item text-primary" ng-if="vm.canCreateOrder"
                       href="#!orden">{{item.order != null ? 'Revisar' : 'Generar'}} Orden de pago</a>
+                    <a class="dropdown-item text-primary" ng-if="item.order != null"
+                      ng-click="vm.orderPDF(item)">
+                      Ver Orden de pago
+                      <span class="fas fa-file-pdf" data-fa-transform="shrink-2"></span>
+                    </a>                    
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-primary" ng-click="vm.pdf()">
+                      Licencia PDF
+                      <span class="fas fa-file-pdf" data-fa-transform="shrink-2"></span>
+                    </a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#rejectObsModal"
                       ng-click="vm.setObsLabels(4)">
                       Rechazar <span class="far fa-calendar-times" data-fa-transform="shrink-2"></span>
-                    </a>
-                    <a class="dropdown-item text-primary" ng-click="vm.pdf()">
-                      PDF ?? <span class="far fa-credit-card" data-fa-transform="shrink-2"></span>
                     </a>
                     <!-- <a ng-if="vm.status_lic == 'Solicitudes'" class="dropdown-item text-primary" href="#!solidarios">
                       Corresponsables <span class="fas fa-users" data-fa-transform="shrink-2"></span>

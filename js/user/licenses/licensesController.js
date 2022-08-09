@@ -180,6 +180,13 @@
           $window.open(fileURL, '_blank');
           vm.touch = false;
         };
+
+        vm.orderPDF = async license => {
+          let response = await usrService.axios('get',`licencias/${license.id}/orden/${license.order.id}/pdf`, null, 1);
+          let fileURL = window.URL.createObjectURL(response.data);
+          $window.open(fileURL, '_blank');
+          vm.touch = false;
+      };
     }
 
     angular

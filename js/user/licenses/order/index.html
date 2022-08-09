@@ -48,14 +48,18 @@
         <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
             <div class="card border-dark mb-3" style="max-width: 18rem;">
                 <div class="card-body text-info">
-                    <p ng-if="vm.license.license_type_id >= 17 && vm.license.license_type_id <= 20">
+                    <p>
+                        <b>{{vm.license.license_type.nombre}}</b><br>
+                        <b>{{vm.license.license_type.nota}}</b><br>
+                    </p>
+                    <p ng-if="vm.license.ad != null">
                         Medidas del anuncio. <b>{{vm.license.ad.colocacion == true ? 'Colocaci&oacute;n' : 'Renovaci&oacute;n'}}</b><br>
                         Alto. <b>{{vm.license.ad.alto}}</b><br>
                         Ancho. <b>{{vm.license.ad.ancho}}</b><br>
                         Largo. <b>{{vm.license.ad.largo}}</b><br>
                         Cantidad de anuncios. <b>{{vm.license.ad.cantidad}}</b><br>
                     </p>
-                    <p ng-if="vm.license.license_type_id >= 1 && vm.license.license_type_id <=3">
+                    <p ng-if="vm.license.construction != null">
                         Sup. construci&oacute;n total. <b>{{vm.license.construction.sup_total_amp_reg_const}} m2</b>
                     </p>
                 </div>                    
