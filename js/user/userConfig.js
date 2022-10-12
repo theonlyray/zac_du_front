@@ -49,6 +49,10 @@
                     files: ['js/user/licTypes/licTypeController.js']
                 },
                 {
+                    name: 'uses',
+                    files: ['js/user/uses/usesController.js']
+                },
+                {
                     name: 'profile',
                     files: ['js/user/profile/profileController.js']
                 },
@@ -163,6 +167,16 @@
 				resolve: {
 					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
 						return $ocLazyLoad.load('licTypes');
+					}]
+				}
+			})
+			.when('/usos', {
+				templateUrl: 'js/user/uses/index.html',
+				controller: 'usesController',
+				controllerAs: 'vm',
+				resolve: {
+					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
+						return $ocLazyLoad.load('uses');
 					}]
 				}
 			})

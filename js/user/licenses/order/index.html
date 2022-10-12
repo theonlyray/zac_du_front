@@ -11,7 +11,7 @@
                 ng-if="vm.license.order.validada == false && vm.canDeleteOrder" data-bs-toggle="modal" data-bs-target="#rejectObsModal">
                 <span class="fas fa-edit"></span> Eliminar Orden </a>
               <a class="btn btn-outline-success rbtn-sm" 
-                ng-if="vm.license.order.validada == false && vm.canValidateOrder" ng-click="vm.validate()">
+                ng-if="vm.license.order.validada == false && vm.canValidateOrder" data-bs-toggle="modal" data-bs-target="#validateModal">
                 <span class="fas fa-edit"></span> Validar Orden </a>
               <a class="btn btn-outline-secondary rbtn-sm" 
                 ng-if="vm.license.order != null" ng-click="vm.pdf()">
@@ -29,19 +29,21 @@
                 <b>OC-{{vm.license.folio}}</b><br>
                 <div ng-switch="vm.license.order.validada">
                     <div ng-switch-when="true">
-                      <b>Orden Validada.</b>
+                      <b><font color="green">Orden Validada.</font></b>
                     </div>
                     <div ng-switch-when="false">
-                        <b>Orden Por Validar.</b>
+                        <b><font color="orange">Orden Por Validar.</font></b>
                     </div>
                     <div ng-switch-default>
-                        <b>Sin Orden Generada.</b>
+                        <b><font color="red">Sin Orden Generada.</font></b>
                     </div>
                 </div><br>
                 Fecha de generaci&oacute;n.<br>
                 <b>{{vm.license.order.fecha_registro | date:"medium"}}</b><br><br>
                 Fecha de &uacute;ltima actualizaci&oacute;.<br>
-                <b>{{vm.license.order.fecha_registro | date:"medium"}}</b>
+                <b>{{vm.license.order.fecha_registro | date:"medium"}}</b><br><br>
+                Fecha de autorizaci&oacute;n.<br>
+                <b>{{vm.license.order.fecha_autorizacion | date:"medium"}}</b><br><br>                
             </label>
           </h2>
         </div>
@@ -61,6 +63,14 @@
                     </p>
                     <p ng-if="vm.license.construction != null">
                         Sup. construci&oacute;n total. <b>{{vm.license.construction.sup_total_amp_reg_const}} m2</b>
+                    </p>
+                    <p>
+                        Tipo de pol&iacute;gono. <b>{{vm.license.property.poligono}}</b>
+                    </p>
+                    <p ng-if="vm.license.license_type_id == 16">
+                        Uso de Suelo.<br> 
+                            <b>{{vm.license.compatibility_certificate.land_use.nombre}}</b><br>
+                            <b>{{vm.license.compatibility_certificate.land_use_description.descripcion}}</b>
                     </p>
                 </div>                    
             </div>
@@ -92,11 +102,10 @@
     </div>
     <div class="card-body p-0">
         <div class="row bg-200 text-900 no-gutters px-1 fs--1 font-weight-semi-bold">
-            <div class="col-9 col-md-8 p-2 px-md-3">Derecho</div>
+            <div class="col-9 col-md-8 p-2 px-md-3">Cuenta</div>
             <div class="col-3 col-md-4 px-3">
                 <div class="row">
                     <div class="col-md-4 py-2 d-none d-md-block text-center">Cantidad</div>
-                    <div class="col-md-4 py-2 d-none d-md-block text-center">Unidad</div>
                     <div class="col-12 col-md-4 text-right p-2 px-md-3">Precio</div>
                 </div>
             </div>
@@ -106,8 +115,8 @@
             <div class="col-8 py-3 px-2 px-md-3">
                 <div class="media align-items-center">
                     <div class="media-body">
-                        {{item.clave}}<br>
-                        {{item.descripcion}}
+                        {{item.cuenta}}<br>
+                        {{item.Descripcion}}
                     </div>
                 </div>
             </div>
@@ -124,11 +133,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 text-right pl-0 pr-2 pr-md-3 order-0 order-md-1 mb-2 mb-md-0 text-600">
-                        {{item.unidad}}
+                    <div ng-if="item.monto != null" class="col-md-4 text-right pl-0 pr-2 pr-md-3 order-0 order-md-1 mb-2 mb-md-0 text-600">
+                        {{item.monto | currency}}
                     </div>
-                    <div class="col-md-4 text-right pl-0 pr-2 pr-md-3 order-0 order-md-1 mb-2 mb-md-0 text-600">
-                        {{item.precio | currency}}
+                    <div ng-if="item.monto == null">
+                        <div class="input-group input-group-sm" class="col-md-4 text-right pl-0 pr-2 pr-md-3 order-0 order-md-1 mb-2 mb-md-0 text-600">
+                            <input class="form-control text-center px-2 input-quantity input-spin-none" id="input_{{item.id}}"
+                                type="number" min="0" ng-model="item.precio" style="max-width: 100px" />
+                            <button class="btn btn-sm btn-outline-secondary border-300 px-2" id="btn_{{item.id}}"
+                                disabled>Precio</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,7 +155,7 @@
             <table class="table table-striped border-bottom">
                 <thead>
                     <tr class="bg-primary text-white">
-                        <th>Derecho</th>
+                        <th>Cuenta</th>
                         <th class="border-0 text-right">Cantidad</th>
                         <th class="border-0 text-right">Unidad</th>
                         <th class="border-0 text-right">Precio</th>
@@ -152,7 +166,7 @@
                     <tr ng-repeat="item in vm.dutiesPayload">
                         <td>
                             <h6>
-                                {{item.clave}}<br>
+                                {{item.cuenta}}<br>
                                 {{item.descripcion}}
                             </h6>
                             <div class="fs--2 fs-md--1"><a class="text-danger"
@@ -160,7 +174,7 @@
                         </td>
                         <td class="align-middle text-right">{{item.unidad}}</td>
                         <td class="align-middle text-center">{{item.cantidad}}</td>
-                        <td class="align-middle text-right">{{item.precio | currency}}</td>
+                        <td class="align-middle text-right">{{item.monto | currency}}</td>
                         <td class="align-middle text-right">{{item.total | currency}}</td>
                     </tr>
                 </tbody>
@@ -196,14 +210,38 @@
             aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
-        <p>Está a punto de <b>Eliminar</b> la orden de cobro de <b>{{vm.license.license_type.nombre}} {{vm.license.license_type.nota}}</b> con Folio. <b>{{vm.license.folio}}</b>.</p>
-        <b>Esta orden no podrá ser restaurada.</b>
+        <p>Est&aacute; a punto de <b>Eliminar</b> la orden de cobro de <b>{{vm.license.license_type.nombre}} {{vm.license.license_type.nota}}</b> con Folio. <b>{{vm.license.folio}}</b>.</p>
+        <b>Esta orden no podr&aacute; ser restaurada.</b>
         <input type="password" ng-model="vm.license.contrasenia" class="form-control mt-2" placeholder="Contraseña" 
           required autocomplete="new-password">
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cerrar</button>
         <button class="btn btn-danger btn-sm" type="button" data-bs-dismiss="modal" ng-click="vm.delete()">Eliminar</button>
+      </div>
+    </div>
+    </div>
+</div>
+
+<!-- autorizacion-->
+<div class="modal fade" id="validateModal" tabindex="-1" role="dialog" aria-labelledby="validateModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="validateModalLabel">Autorizar Orden de Cobro OC-{{vm.license.folio}}</h5>
+        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="font-weight-light"
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p>Est&aacute; a punto de <b>Autorizaar</b> la orden de cobro de <b>{{vm.license.license_type.nombre}} {{vm.license.license_type.nota}}</b> con Folio. <b>{{vm.license.folio}}</b>.</p>
+        <b>Esta orden no podrá ser eliminada y ser&aacute; visible por el solicitante.</b>
+        <input type="password" ng-model="vm.license.contrasenia" class="form-control mt-2" placeholder="Contraseña" 
+          required autocomplete="new-password">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">Cerrar</button>
+        <button class="btn btn-success btn-sm" type="button" data-bs-dismiss="modal" ng-click="vm.validate()">Validar</button>
       </div>
     </div>
     </div>

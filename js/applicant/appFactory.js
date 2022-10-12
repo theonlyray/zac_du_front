@@ -14,31 +14,34 @@
 
         const licenseGroups = type => {
             switch (type) {
-                case 1 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 2 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 3 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 4 : return [location, construction_desc, construction_owners];
-                case 5 : return [location, construction_desc, construction_owners];
-                case 6 : return [announcement,location, construction_desc, construction_backgrounds, construction_owners];
-                case 7 : return [location, construction_owners];
-                case 8 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 9 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 10 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 11 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 12 : return [location, construction_owners];
-                case 13 : return [construction_backgrounds];
-                case 15 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 16 : return [location, construction_boundaries, construction_uses];
-                case 17 : return [ad_activity, ad_type_detached, ad_location, ad_desc, ad_validity];
-                case 18 : return [ad_activity, ad_type_structural, ad_location, ad_desc, ad_validity];
-                case 19 : return [ad_activity, ad_type_detached, ad_location, ad_desc, ad_validity];
-                case 20 : return [ad_activity, ad_type_vehicles, ad_desc, ad_validity];
-                case 22 : return [location, construction_owners, construction_boundaries_sfds];
-                case 24 : return [location, construction_owners];
-                case 25 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 26 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 27 : return [location, construction_desc, construction_backgrounds, construction_owners];
-                case 28 : return [location, construction_desc, construction_backgrounds, construction_owners];
+                case 1 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];               //licencia menor
+                case 2 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];               //licencia mayor
+                case 3 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];               //proyectos especialies
+                case 4 : return [location, construction_desc, construction_owners, construction_validity];                                         //bardeo
+                case 5 : return [location, construction_desc, construction_owners, construction_validity];                                         //enjarres, aplanados mayor 50 m
+                case 6 : return [announcement,location, construction_desc, construction_backgrounds, construction_owners, construction_validity];  //prorroga
+                case 7 : return [location, construction_owners];                                                            //no oficial      
+                case 8 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];               //torre eolica
+                case 9 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];               //torre telecommunicaciones
+                case 10 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];              //estacion de servicio gas
+                case 11 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];              //estacion de servicio gasolinera
+                case 12 : return [location, construction_owners];                                                           //constancia servicios
+                case 13 : return [construction_backgrounds];                                                                //constancia autoconstruccion
+                case 14 : return [location, construction_owners, safety];                                                   //constancia seguridad estructural
+                case 15 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];              //regularizacion
+                case 16 : return [location, construction_boundaries, construction_uses];                                    //constancia compatibilidad
+                case 17 : return [ad_activity, ad_type_detached, ad_location, ad_desc, ad_validity];                        //anuncios adosados fachada
+                case 18 : return [ad_activity, ad_type_structural, ad_location, ad_desc, ad_validity];                      //anuncios estructurales
+                case 19 : return [ad_activity, ad_type_detached, ad_location, ad_desc, ad_validity];                        //anuncios temporales adosados
+                case 20 : return [ad_activity, ad_type_vehicles, ad_desc, ad_validity];                                     //anuncios en vehiculos
+                                                                                                                            //21 seguridad estructural antena
+                case 22 : return [location, construction_owners, construction_boundaries_sfds];                             //22 sub division, fusion
+                                                                                                                            //terminacion                                                                                                                            
+                case 24 : return [location, construction_owners];                                                           //romper pavimento
+                case 25 : return [location, construction_desc, construction_backgrounds, construction_owners];              //demolicion
+                case 26 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];              //techumbres menor
+                case 27 : return [location, construction_desc, construction_backgrounds, construction_owners, construction_validity];              //techumbres mayor
+                case 28 : return [location, construction_desc, construction_backgrounds, construction_owners];              //cimentacion
                 default:
                     break;
             }
@@ -113,9 +116,11 @@
         
         const ad_activity = {
             group: 'ACTIVIDAD', iGroup: 'ad', fields: [
-                { title: 'Tipo de actividad', field: 'colocacion', type: 6, size: 12, options: [
-                    { title: 'Colocación', value: true, }, 
-                    { title: 'Renovación', value: false, },] },
+                { title: 'Tipo de actividad', field: 'colocacion', type: 6, size: 12, 
+                options: [
+                    { title: 'Colocación', value: 'Colocación', }, 
+                    { title: 'Renovación', value: 'Renovación', },] 
+                },
             ]
         };
         
@@ -206,7 +211,8 @@
 
         const construction_boundaries = {
             group: 'COLINDANCIAS', iGroup: 'uses', fields: [
-                { title: 'Descripción de las colindancias', field: 'medidas_colindancia', type: 3, size: 12,  },
+                { title: 'Descripción de mediodas y colindancias', field: 'medidas_colindancia', type: 3, size: 8,  },
+                { title: 'M2 de ocupación', field: 'm2_ocupacion', type: 2, size: 4, step: 0.01, min: 1 },
                 // { title: 'tabla', field: 'antecedentes', type: 97, size: 12 }
             ]
         };
@@ -225,7 +231,21 @@
                 // { title: 'tabla', field: 'antecedentes', type: 97, size: 12 }
             ]
         };
+        
+        const safety = {
+            group: 'DESTINO DEL PISO O CUBIERTA', iGroup: 'safety', fields: [
+                { title: 'Destino', field: 'destino', type: 96, size: 12, value:'Edge' },
+                // { title: 'tabla', field: 'antecedentes', type: 97, size: 12 }
+            ]
+        };
 
+        const construction_validity = {
+            group: 'VIGENCIA DE LA LICENCIA', iGroup: 'validity', fields: [
+                { title: 'Fecha de Inicio de Vigencia', field: 'fecha_autorizacion', type: 5, size: 4},
+                { title: 'Fecha de Fin de Vigencia', field: 'fecha_fin_vigencia', type: 5, size: 4},
+                { title: 'Total de días', field: 'dias_total', type: 2, size: 4},
+            ]
+        };
         // service.validar_img = (file) => {
         //     console.log(file);
         //     if (file.filesize < 10485760) {

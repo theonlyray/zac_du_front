@@ -1,13 +1,13 @@
 
 #nprogress .bar {
-  background: rgb(45, 197, 159) !important;
+  background: rgb(2, 194, 85) !important;
 }
 
 #nprogress .peg {
-  box-shadow: 0 0 10px rgb(45, 197, 159), 0 0 5px rgb(45, 197, 159) !important;
+  box-shadow: 0 0 10px rgb(2, 194, 85), 0 0 5px rgb(2, 194, 85) !important;
 }
 
 #nprogress .spinner-icon {
-  border-top-color: rgb(45, 197, 159) !important;
-  border-left-color: rgb(45, 197, 159) !important;
+  border-top-color: rgb(2, 194, 85) !important;
+  border-left-color: rgb(2, 194, 85) !important;
 }

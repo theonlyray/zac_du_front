@@ -1,0 +1,135 @@
+<div class="card" ng-init="vm.init()">
+    <div class="card-header">
+      <div class="row align-items-center justify-content-between">
+        <div class="col-12 col-sm-12 ml-12 text-right pl-0">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+              <a class="btn btn-outline-primary rbtn-sm" href="#!tramites/Proceso">
+                <span class="fas fa-list"></span> Licencias en Proceso </a>
+              <a class="btn btn-outline-secondary rbtn-sm" 
+                ng-if="vm.license.order != null" ng-click="vm.pdf()">
+                <span class="fas fa-file-pdf"></span> Ver Orden </a>
+            </div>
+          </div>
+        <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
+          <h2 class="fs-0 mb-0 text-nowrap py-2 py-xl-0"> 
+            <label>
+                <b>{{vm.license.license_type.nombre}}</b><br>
+                <b>{{vm.license.license_type.nota}}</b><br>
+                No. Folio <b>{{vm.license.folio != null ? vm.license.folio : vm.license.id}}</b> <br>
+                Estatus: <b>{{vm.license.estatus}}</b><br>
+                <br>Orden de pago<br> 
+                <b>OC-{{vm.license.folio}}</b><br>
+                <div ng-switch="vm.license.order.validada">
+                    <div ng-switch-when="true">
+                      <b><font color="green">Orden Validada.</font></b>
+                    </div>
+                    <div ng-switch-when="false">
+                        <b><font color="orange">Orden Por Validar.</font></b>
+                    </div>
+                    <div ng-switch-default>
+                        <b><font color="red">Sin Orden Generada.</font></b>
+                    </div>
+                </div><br>
+                Fecha de generaci&oacute;n.<br>
+                <b>{{vm.license.order.fecha_registro | date:"medium"}}</b><br><br>
+                Fecha de &uacute;ltima actualizaci&oacute;.<br>
+                <b>{{vm.license.order.fecha_registro | date:"medium"}}</b><br><br>
+                Fecha de autorizaci&oacute;n.<br>
+                <b>{{vm.license.order.fecha_autorizacion | date:"medium"}}</b>
+            </label>
+          </h2>
+        </div>
+        <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
+            <div class="card border-dark mb-3" style="max-width: 18rem;">
+                <div class="card-body text-info">
+                    <p>
+                        <b>{{vm.license.license_type.nombre}}</b><br>
+                        <b>{{vm.license.license_type.nota}}</b><br>
+                    </p>
+                    <p ng-if="vm.license.ad != null">
+                        Medidas del anuncio. <b>{{vm.license.ad.colocacion == true ? 'Colocaci&oacute;n' : 'Renovaci&oacute;n'}}</b><br>
+                        Alto. <b>{{vm.license.ad.alto}}</b><br>
+                        Ancho. <b>{{vm.license.ad.ancho}}</b><br>
+                        Largo. <b>{{vm.license.ad.largo}}</b><br>
+                        Cantidad de anuncios. <b>{{vm.license.ad.cantidad}}</b><br>
+                    </p>
+                    <p ng-if="vm.license.construction != null">
+                        Sup. construci&oacute;n total. <b>{{vm.license.construction.sup_total_amp_reg_const}} m2</b>
+                    </p>
+                </div>                    
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-header">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
+                <h2 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">
+                    <b>{{vm.license.pagada == true ? 'Pagado' : 'Sin Pago'}}</b><br>
+                    Referencia de pago. <b>{{vm.license.no_ref_pago}} {{vm.license.no_ref_pago == null ? 'Sin Pago' : ''}}</b><br>
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="card no-gutters">
+    <div class="card-header">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-6 col-sm-auto d-flex align-items-center pr-0">
+                <h4 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">Datos de Desglose</h4>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+      <div class="card-deck">
+        <div class="card">
+            <div class="card-body">
+              <p class="card-text">                
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Cuenta</th>
+                      <th scope="col">Cantidad</th>
+                      <th scope="col">Precio</th>
+                      <th scope="col">Importe</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="item in vm.license.order.duties">
+                      <td><b>{{item.descripcion}}</b></td>
+                      <td><b>{{item.cantidad}}</b></td>
+                      <td><b>{{item.monto | currency}}</b></td>
+                      <td><b>{{item.total | currency}}</b></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                        <td>
+                            <b>Gran total.</b> {{vm.license.order.total | currency}}
+                        </td>
+                        <td><b>Pago en línea</b>
+                            <form action="https://www.adquiramexico.com.mx:443/mExpress/pago/avanzado"
+                                method="post"/ target="_blank">
+                                <input type="hidden" name="importe" ng-value="vm.license.order.total"/>
+                                <input type="hidden" name="referencia" ng-value="vm.license.order.folio_api"/>
+                                <input type="hidden" name="urlretorno" value="http://api.ciczac.org/pagos"/>
+                                <input type="hidden" name="idexpress" value="2689"/>
+                                <input type="hidden" name="financiamiento" value="0"/>
+                                <input type="hidden" name="plazos" value=""/>
+                                <input type="hidden" name="mediospago" value="111000"/>
+                                <input type="hidden" name="signature" ng-value="vm.license.order.hash"/>
+                                <input type="image"
+                                src="https://s3.amazonaws.com/prod.adquira.mp2.repo.files/verticales/bexpress/resources/img/icon/paybutton_4.png" />
+                            </form>
+                        </td>
+                    </tr>
+                  </tfoot>
+                </table>
+                <!-- <button class="btn btn-outline-primary mr-1 mb-1" type="submit" ng-click="vm.download()">Descargar Orden </button> -->
+              </p>
+            </div>
+        </div>
+      </div>            
+    </div>
+</div>

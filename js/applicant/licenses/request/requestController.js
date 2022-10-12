@@ -9,8 +9,8 @@
         vm.dUValidation = ($window.sessionStorage.getItem('__DUValidation') == 'true');
         vm.colValidation = ($window.sessionStorage.getItem('__colValidation') == 'true');
     
-        $window.sessionStorage.setItem('__lat',20.521676);
-        $window.sessionStorage.setItem('__lng',-100.813449);
+        $window.sessionStorage.setItem('__lat', 22.774286330471714);
+        $window.sessionStorage.setItem('__lng', -102.58732274627991);
 
         vm.init = async () => {
             if ((vm.utype == 9 && vm.dUValidation && vm.colValidation) || (vm.utype == 10 && vm.dUValidation)) {

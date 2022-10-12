@@ -7,16 +7,14 @@
         </h1>
       </div>
       <div class="col-6 col-sm-auto ml-auto text-right pl-0">
-        <div id="dashboard-actions">   
-          <a class="btn btn-outline-primary rounded-capsule btn-sm" href="#!Solicitudes">                    
-            <span class="fas fa-list"></span> Solicitudes </a>
-          <a class="btn btn-outline-info rounded-capsule btn-sm" href="#!license_reqs">                    
-            <span class="fas fa-file-upload"></span> Requisitos </a>
-          <a class="btn btn-outline-success rounded-capsule btn-sm"
-            data-bs-toggle="modal" data-bs-target="#sendModal">                    
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+          <a class="btn btn-outline-primary rbtn-sm" href="#!tramites/Proceso">
+            <span class="fas fa-list"></span> Licencias en Proceso </a>
+          <a class="btn btn-outline-secondary rbtn-sm" href="#!license_reqs">
+            <span class="fas fa-file-upload"></span> Revisar Requisitos </a>
+          <a class="btn btn-outline-success rbtn-sm" data-bs-toggle="modal" data-bs-target="#sendModal">                    
             <span class="fas fa-paper-plane"></span> Enviar solicitud </a>
-          <a class="btn btn-outline-danger rounded-capsule btn-sm"
-            data-bs-toggle="modal" data-bs-target="#cancelModal">                    
+          <a class="btn btn-outline-danger rbtn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal">                    
             <span class="fas fa-file-prescription"></span> Cancelar Solicitud </a>
         </div>
       </div>

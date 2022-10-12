@@ -20,6 +20,45 @@
         'Desmebración',
       ];
 
+      vm.detinationsList = [
+        {id:1, desc:'Casa Habitación'},
+        {id:2, desc:'Departamentos'},
+        {id:3, desc:'Viviendas'},
+        {id:4, desc:'Dormitorios'},
+        {id:5, desc:'Cuartos de Hotel'},
+        {id:6, desc:'Internados de Escuela'},
+        {id:7, desc:'Cuarteles'},
+        {id:8, desc:'Cárceles'},
+        {id:9, desc:'Correccionales'},
+        {id:10, desc:'Hospitales y similares'},
+        {id:11, desc:'Oficinas'},
+        {id:12, desc:'Despachos'},
+        {id:13, desc:'Laboratorios'},
+        {id:14, desc:'Aulas'},
+        {id:15, desc:'Pasillos'},
+        {id:16, desc:'Escaleras'},
+        {id:17, desc:'Rampas'},
+        {id:18, desc:'Vestíbulos'},
+        {id:19, desc:'Pasajes de acceso libre al público'},
+        {id:20, desc:'Estadios'},
+        {id:21, desc:'Lugares de Reunión sin asientos individuales'},
+        {id:22, desc:'Bibliotecas'},
+        {id:23, desc:'Templos'},
+        {id:24, desc:'Cines'},
+        {id:25, desc:'Teatros'},
+        {id:26, desc:'Gimnasion'},
+        {id:27, desc:'Salones de baile'},
+        {id:28, desc:'Restaurantes'},
+        {id:29, desc:'Salas de juego y similares'},
+        {id:30, desc:'Comercios'},
+        {id:31, desc:'Fabricas'},
+        {id:32, desc:'Bodegas'},
+        {id:33, desc:'Azoteas con pendientes mayor a 5%'},
+        {id:34, desc:'Azoteas con pendientes no mayor a 5%, otras cubiertas cualquier pendiente'},
+        {id:35, desc:'Volados en vía pública, marquesinas, balcones y similares'},
+        {id:36, desc:'Garajes y Estacionamientso para vehículos'},
+      ];
+
       vm.$onChanges = (changes) => {
         vm.myform = false;
         vm.licenseData = {};
@@ -47,6 +86,8 @@
               vm.license.backgrounds = castBackgroundDates(vm.license.backgrounds);
             }else if (payload.license_type_id >= 17 && payload.license_type_id <= 20){
               vm.license.ad = castAdDates(vm.license.ad);
+            }else if(vm.license.license_type_id == 14){
+              restoreSafetyDestinity();
             }
 
           }          
@@ -66,7 +107,7 @@
       };
       
       const castAdDates = object => {
-        object.colocacion = (object.colocacion == true ? 'Colocación' : 'Renovación');
+        // object.colocacion = (object.colocacion == true ? 'Colocación' : 'Renovación');
         object.tipo_descripcion = object.tipo;
         object.fecha_fin = new Date(object.fecha_fin);
         object.fecha_inicio = new Date(object.fecha_inicio);
@@ -98,18 +139,11 @@
           case 'Docs. con Observaciones': return 2;
           case 'Docs. Corregidos': return 3;
           case 'Ingreso Validado': return 4;
-          case 'Validado Primer Revision': return 5;
-          case 'Observaciones Primer Revision': return 6;
-          case 'Validado Segunda Revision': return 7;
-          case 'Observaciones Segunda Revision': return 8;
-          case 'Validado Tercera Revision': return 9;
-          case 'Observaciones Tercera Revision': return 10;
-          case 'Por Pagar': return 11;
-          case 'Pagado': return 12;
-          case 'Proceso de Firmas': return 13;
-          case 'Autorizado': return 14;
-          case 'Cancelado': return 15;
-          case 'Rechazado': return 16;
+          case 'Docs y Planos Validados': return 5;
+          case 'Por Pagar': return 6;
+          case 'Autorizado': return 7;
+          case 'Cancelado': return 8;
+          case 'Rechazado': return 9;
           default: return 0;
         }
       };
@@ -133,6 +167,9 @@
             if (!backgroundsVerified) return;
           }else if(vm.license.license_type_id >= 17 && vm.license.license_type_id <= 20){
             let adsVerified = checkAd();
+          }else if (vm.license.license_type_id == 14) { //safety certificate
+            let safetyVerified = checkSafetyDestinity();
+            if (!safetyVerified) return;
           }
 
           const response = await appService.axios('patch',`licencias/${licId}`, vm.license);
@@ -144,14 +181,43 @@
             $scope.$digest();
           }else if (response.status == 422){ 
             toastr.warning(response.data.message);
-            restoreFoliosBackgrounds();
+            vm.license.backgrounds[0] == null ? restoreFoliosBackgrounds() : null;
           }
           else{ toastr.warning(response.data.message); restoreFoliosBackgrounds();}
+          vm.license.license_type_id == 14 ? restoreSafetyDestinity() : null;
           
           vm.touch = false;
         } else vm.touch = false;
       };
       
+      const checkSafetyDestinity = () => {
+        if(vm.license.safety != null && !angular.isUndefined(vm.license.safety.destino)){
+            let element = vm.detinationsList.find(x => x.desc == vm.license.safety.destino);
+            if (angular.isUndefined(element)) {
+                toastr.error('El destino de piso o cubierta no existe, seleccione un valor correcto');
+                vm.touch = false;
+                return false;
+            }
+            else vm.license.safety.destino = element.id;
+        }
+        
+        return true;
+      };
+
+      const restoreSafetyDestinity = () => {
+          if(!angular.isUndefined(vm.license.safety.destino) && 
+            !angular.equals(vm.license.safety.destino, null)){
+              let element = vm.detinationsList.find(x => x.id == vm.license.safety.destino);
+              if (angular.isUndefined(element)) {
+                  toastr.error('El destino de piso o cubierta no existe, seleccione un valor correcto');
+                  return false;
+              }
+              else vm.license.safety.destino = element.desc;
+              $scope.$digest();
+          }
+      };
+
+
       const checkBackgrounds = () => {
         if (angular.isUndefined(vm.license.backgrounds)) vm.license.backgrounds = [ null ];             
         else{

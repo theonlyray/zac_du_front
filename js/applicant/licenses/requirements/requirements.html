@@ -7,18 +7,14 @@
           </h1>
         </div>
         <div class="col-6 col-sm-auto ml-auto text-right pl-0">
-          <div id="dashboard-actions">   
-            <a class="btn btn-outline-primary rounded-capsule btn-sm" href="#!Solicitudes">                    
-              <span class="fas fa-list"></span> Solicitudes </a>
-            <a class="btn btn-outline-success rounded-capsule btn-sm"
-              ng-if="vm.license.estatus == 'Ingresado'"
-              data-bs-toggle="modal" data-bs-target="#sendModal">                    
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <a class="btn btn-outline-primary rbtn-sm" href="#!tramites/Proceso">
+              <span class="fas fa-list"></span> Licencias en Proceso </a>
+              <a class="btn btn-outline-secondary rbtn-sm" href="#!review">
+                <span class="fas fa-edit"></span> Revisar Formulario </a>
+            <a class="btn btn-outline-success rbtn-sm" data-bs-toggle="modal" data-bs-target="#sendModal">                    
               <span class="fas fa-paper-plane"></span> Enviar solicitud </a>
-            <a ng-show="vm.license.estatus == 'Docs. con Observaciones'" class="btn btn-outline-info rounded-capsule btn-sm" ng-click="vm.validation(3)"><span
-                class="fas fa-tasks" data-fa-transform="shrink-3 down-2"></span>Docs. Corregidos</a>
-            <a class="btn btn-outline-danger rounded-capsule btn-sm"
-              ng-if="vm.license.estatus != 'Cancelado'"
-              data-bs-toggle="modal" data-bs-target="#cancelModal">                    
+            <a class="btn btn-outline-danger rbtn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal">                    
               <span class="fas fa-file-prescription"></span> Cancelar Solicitud </a>
           </div>
         </div>
@@ -40,7 +36,7 @@
 <br>
 <div class="card">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation" ng-click="vm.docType = flase">
+        <li class="nav-item" role="presentation" ng-click="vm.docType = false">
           <a class="nav-link {{vm.docType != true ? 'active' : ''}}" id="home-tab" data-toggle="tab" href="" role="tab">Documentos</a>
         </li>
         <li class="nav-item" role="presentation" ng-click="vm.docType = true">

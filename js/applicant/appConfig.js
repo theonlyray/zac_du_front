@@ -21,6 +21,10 @@
                     files: ['js/applicant/licenses/requirements/reqController.js']
                 },
                 {
+                    name: 'payment',
+                    files: ['js/applicant/licenses/payment/paymentController.js']
+                },
+                {
                     name: 'profile',
                     files: ['js/applicant/profile/profileController.js']
                 },
@@ -89,10 +93,19 @@
 					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
 						return $ocLazyLoad.load('documents');
 					}]
+				}                
+			}).when('/pago', {
+				templateUrl: 'js/applicant/licenses/payment/index.html',
+				controller: 'paymentController',
+				controllerAs: 'vm',
+				resolve: {
+					loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {
+						return $ocLazyLoad.load('payment');
+					}]
 				}
 			})
             .otherwise("/tramites/Proceso");            
-    }
+    };
 
         angular
 		.module('app')

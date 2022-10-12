@@ -1,0 +1,148 @@
+<div class="media mb-4 mt-6"><span class="fa-stack mr-2 ml-n1">
+    <i class="fa-inverse fa-stack-1x text-primary fas fas fa-globe" data-fa-transform="shrink-2"></i></span>
+    <div class="media-body">
+      <h5 class="mb-0 text-primary position-relative"><span class="bg-200 pr-3">Listado de Usos de Suelo.</span><span
+            class="border position-absolute absolute-vertical-center w-100 z-index--1 l-0"></span></h5>
+    </div>
+</div>
+
+<div class="card" ng-init="vm.init()">
+    <div class="card-header">
+        <!-- search -->
+        <div class="row">
+            <div class="col-md-12">
+                <form name="userF" ng-if="vm.editing">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputPassword4">Nombre</label>
+                            <input type="text" class="form-control" id="inputName" ng-model="vm.landUse.nombre" alpha required>
+                        </div>
+                    </div>
+                    <!-- editing ng-disabled="userF.$invalid"-->
+                    <div class="form-group col-md-4" ng-if="vm.editing">
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="submit" class="btn btn-success" ng-click="vm.updateLandUse(vm.landUse)">
+                          <i class="fas fa-save"></i> Guardar</button>
+                        <button type="button" class="btn btn-secondary"  ng-click="vm.cancel()">Canelar</button>
+                      </div>
+                    </div>
+                    <!-- save -->
+                    <div class="form-group col-md-2" ng-if="!vm.editing">
+                      <button type="submit" ng-disabled="userF.$invalid" class="btn btn-success" ng-click="vm.addLicType(vm.licType)">
+                        <i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                  </form>
+            </div>
+            <div class="col-md-6">                
+                <label>Buscar Uso de Suelo...</label>
+                <input type="text" class="form-control" placeholder="Buscar Uso de Suelo..." ng-model="vm.landUseFilter"> 
+            </div>
+            <div class="col-md-6">                
+                <label>Buscar Descripci&oacute;n...</label>
+                <input type="text" class="form-control" placeholder="Buscar descripción..." ng-model="vm.descFilter"> 
+            </div>
+        </div>
+    </div>
+    <div class="card-body" ng-init="vm.init()">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="sticky-top sticky-sidebar">
+                    <div class="card mb-3 overflow-hidden">
+                        <div class="card-header">Listado de Usos</div>
+                        <div class="list-group">
+                            <button type="button" 
+                                class="list-group-item list-group-item-action"
+                                aria-current="true"
+                                ng-repeat="use in vm.data_filter = (vm.uses | filter : vm.landUseFilter ).slice((vm.page -1) * vm.data_page, vm.page * vm.data_page)"
+                                ng-click="vm.setUse(use)">
+                                    <p><strong>{{use.nombre}}</strong></p>
+                            </button>
+                        </div>
+                    </div>
+                    <uib-pagination total-items="vm.uses.length" ng-model="vm.page" max-size="6" boundary-link-numbers="true"
+                    rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page="vm.data_page">
+                </uib-pagination>
+                </div>                
+            </div>
+            <div class="col-md-8 pr-lg-2" ng-if="vm.landUse != undefined">
+                <div class="card mb-3 no-gutters">
+                    <div class="card-header">
+                        Descripciones de {{vm.landUse.nombre}}
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addReq">
+                                <i class="fas fa-file"></i> Nueva Descripci&oacute;n</button>
+                            <button type="button" class="btn btn-secondary"  ng-click="vm.cancel()">Canelar</button>
+                        </div>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="desc in vm.landUse.descriptions | filter:  vm.reqFilter">
+                            <div class="card">
+                                <form ng-submit="vm.updateDesc(desc, $index)">
+                                    <div class="card-header">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="reqDesc_{{$index}}" style="height: 100px" ng-model="desc.descripcion"></textarea>
+                                            <label for="reqDesc_{{$index}}">Descripci&oacute;n</label>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <div class="form-floating">
+                                                <input type="number" class="form-control" id="reqDesc_{{$index}}" 
+                                                    ng-model="desc.uma"
+                                                    min="0" step="0.01" required>
+                                                <label for="descUMA_{{$index}}">UMA</label>
+                                            </div>
+                                            <div class="form-floating">
+                                                <input type="number" class="form-control" id="reqCosto_{{$index}}" 
+                                                    ng-model="desc.costo" disabled>
+                                                <label for="descCosto_{{$index}}">Costo</label>
+                                            </div>
+                                        </div>                                            
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                        <br>
+                                        <small class="text-muted">Fecha de registro {{desc.fecha_registro | date:"medium"}}</small><br>
+                                        <small class="text-muted">Fecha de actualización {{desc.fecha_actualizacion | date:"medium"}}</small>
+                                    </div>
+                                </form> 
+                            </div>                              
+                        </li>
+                    </ul>
+                </div>                                    
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addReq" tabindex="-1" aria-labelledby="addReqLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addReqLabel">Agregar Nueva Descripci&oacute;n a {{vm.landUse.nombre}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form ng-submit="vm.saveDesc(vm.use)">
+            <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <textarea class="form-control" id="reqDesc_{{$index}}" style="height: 100px" ng-model="vm.use.descripcion"></textarea>
+                            <label for="reqDesc_{{$index}}">Descripcion</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <input type="number" class="form-control" id="reqDesc_{{$index}}" 
+                                ng-model="vm.use.uma"  min="0" step="0.01" required>
+                            <label for="descUMA_{{$index}}">UMA</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar descripci&oacute;n</button>
+                </div>
+            </form> 
+        </div>
+    </div>
+</div>

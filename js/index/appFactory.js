@@ -14,7 +14,8 @@
             $window.location = 'user.html';
 
             if (utype == 1) $window.location = 'sadmin.html';
-            if (utype >= 9 && utype <= 10) $window.location = 'solicitante.html';
+            if (utype >= 9 && utype <= 10)  $window.location = 'solicitante.html';
+            if (utype >= 6 && utype <= 8)   $window.location = 'colegio.html';
         }
 
         service.dispositivo = () => {

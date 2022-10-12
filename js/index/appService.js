@@ -16,7 +16,7 @@
                 data: form,
                 url: `${url}${path}`,
                 validateStatus: function (status) {
-                    return status >= 200 && status <= 4022; // Resolve only if the status code is less than 500
+                    return status >= 200 && status <= 402; // Resolve only if the status code is less than 500
                 }               
             };
 

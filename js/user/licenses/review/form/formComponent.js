@@ -13,9 +13,17 @@
       vm.my_tramite = [];
       vm.touch = false;
       vm.tables = [];
+      
+      /**Data to datalist and selects request from factory */
+      vm.polygonTypeOptions = usrFactory.polygonTypeOptions;
+      vm.sfdOptions = usrFactory.sfdOptions;
+      vm.detinationsList = usrFactory.detinationsList;
+      /****/
+      const sleep = ms => {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    };
 
-
-      vm.$onChanges = (changes) => {
+      vm.$onChanges = async (changes) => {
         vm.myform = false;
         vm.licenseData = {};
         vm.backgrounds = [];
@@ -41,12 +49,18 @@
             //? numbers in db, id license type
             if (payload.license_type_id <= 6 || 
                ( payload.license_type_id >= 8 && payload.license_type_id <= 11 ) || 
-               (vm.typeId == 13) || (vm.typeId == 15) ||
+               ( payload.license_type_id == 13) || ( payload.license_type_id == 15) || ( payload.license_type_id == 23) ||
                ( payload.license_type_id >= 25 && payload.license_type_id <= 28 )
-            ) {
+            ){
               vm.license.backgrounds = castBackgroundDates(vm.license.backgrounds);
+            }else if (payload.id == 22) {                        
+              // vm.requestData.s_f_d.descripcion : vm.sfdOptions[0] };
             }else if (payload.license_type_id >= 17 && payload.license_type_id == 20){
               vm.license.ad = castAdDates(vm.license.ad);
+            }else if(vm.license.license_type_id == 14){
+              restoreSafetyDestinity();
+            }else if(vm.license.license_type_id == 16){
+              getLandUses();              
             }
 
             vm.license.validity = castValidityDates(vm.license.validity);
@@ -74,7 +88,7 @@
       };
 
       const castAdDates = object => {
-        object.colocacion = (object.colocacion == true ? 'Colocación' : 'Renovación');
+        // object.colocacion = (object.colocacion == true ? 'Colocación' : 'Renovación');
         object.tipo_descripcion = object.tipo;
         object.fecha_fin = new Date(object.fecha_fin);
         object.fecha_inicio = new Date(object.fecha_inicio);
@@ -111,20 +125,13 @@
           case 'Docs. con Observaciones': return 2;
           case 'Docs. Corregidos': return 3;
           case 'Ingreso Validado': return 4;
-          case 'Validado Primer Revision': return 5;
-          case 'Observaciones Primer Revision': return 6;
-          case 'Validado Segunda Revision': return 7;
-          case 'Observaciones Segunda Revision': return 8;
-          case 'Validado Tercera Revision': return 9;
-          case 'Observaciones Tercera Revision': return 10;
-          case 'Por Pagar': return 11;
-          case 'Pagado': return 12;
-          case 'Proceso de Firmas': return 13;
-          case 'Autorizado': return 14;
-          case 'Cancelado': return 15;
-          case 'Rechazado': return 16;
+          case 'Docs y Planos Validados': return 5;
+          case 'Por Pagar': return 6;
+          case 'Autorizado': return 7;
+          case 'Cancelado': return 8;
+          case 'Rechazado': return 9;
           default: return 0;
-        }      
+        }
       };
 
       vm.sendReview = async () => {
@@ -142,6 +149,12 @@
             if (!backgroundsVerified) return;
           }else if(vm.license.license_type_id >= 17 && vm.license.license_type_id <= 20){
             let adsVerified = checkAd();
+          }else if (vm.license.license_type_id == 14) { //safety certificate
+            let safetyVerified = checkSafetyDestinity();
+            if (!safetyVerified) return;
+          }else if (vm.license.license_type_id == 16){
+            let landUsescheked = checkLandUses();
+            if (!landUsescheked) return;
           }
 
           const response = await usrService.axios('patch',`licencias/${licId}`, vm.license);
@@ -150,27 +163,53 @@
             vm.license = response.data;
             vm.license.backgrounds = castBackgroundDates(vm.license.backgrounds);
             vm.license.ad = castAdDates(vm.license.ad);
-
-          }else if (response.status == 422){ 
+            restoreLandUses();
+          }else if (response.status == 422){
             toastr.warning(response.data.message);
             restoreFoliosBackgrounds();
           }
           else{ toastr.warning(response.data.message); restoreFoliosBackgrounds();}
-          
+          vm.license.license_type_id == 14 ? restoreSafetyDestinity() : null;
+
           vm.touch = false;
           $scope.$digest();
         } else vm.touch = false;
       };
       
+      const checkSafetyDestinity = () => {
+        if(vm.license.safety != null && !angular.isUndefined(vm.license.safety.destino)){
+            let element = vm.detinationsList.find(x => x.desc == vm.license.safety.destino);
+            if (angular.isUndefined(element)) {
+                toastr.error('El destino de piso o cubierta no existe, seleccione un valor correcto');
+                vm.touch = false;
+                return false;
+            }
+            else vm.license.safety.destino = element.id;
+        }
+        
+        return true;
+      };
+
+      const restoreSafetyDestinity = () => {
+          if(!angular.isUndefined(vm.license.safety.destino) && 
+            !angular.equals(vm.license.safety.destino, null)){
+              let element = vm.detinationsList.find(x => x.id == vm.license.safety.destino);
+              if (angular.isUndefined(element)) {
+                  toastr.error('El destino de piso o cubierta no existe, seleccione un valor correcto');
+                  return false;
+              }
+              else vm.license.safety.destino = element.desc;
+              $scope.$digest();
+          }
+      };
+
       const checkBackgrounds = () => {
         if (angular.isUndefined(vm.license.backgrounds)) vm.license.backgrounds = [ null ];             
         else{
             for (const key in vm.license.backgrounds) {
                 if(!angular.isUndefined(vm.license.backgrounds[key].prior_license_id) && 
                   !angular.equals(vm.license.backgrounds[key].prior_license, null)){
-                  console.log(vm.license.backgrounds[key].prior_license_id);
                     let element = vm.foliosList.find(x => x.folio == vm.license.backgrounds[key].prior_license_id);
-                    console.log(element);
                     if (angular.isUndefined(element)) {
                         toastr.error('El folio de la licencia de antecente no existe, seleccione un valor correcto');
                         return false;
@@ -221,7 +260,81 @@
           } else vm.touch = false;
           $scope.$digest();
         } else vm.touch = false;
-      }
+      };
+      
+      vm.useSelected = landUse => {
+        vm.landUse = vm.landUses.find( x => x.nombre == vm.license.compatibility_certificate.land_use_id);
+
+        if (angular.isDefined(vm.landUse)) getLandUsesDescs();
+        console.log(landUse);
+      };
+      /**/
+      const getLandUses = async () => {
+        let request = await usrService.axios('get', 'usos');
+        vm.landUses = request.data;
+
+        restoreLandUses();
+      };
+
+      const getLandUsesDescs = async () => {
+        let request = await usrService.axios('get', `usos/${vm.license.compatibility_certificate.land_use_id}`);
+        vm.landUsesDesc = request.data.descriptions;
+        console.log(vm.landUsesDesc);
+      };
+      /**/
+      const checkLandUses = () => {
+
+        if(vm.license.compatibility_certificate != null && !angular.isUndefined(vm.license.compatibility_certificate.land_use_id)){
+          let element = vm.landUses.find(x => x.nombre == vm.license.compatibility_certificate.land_use_id);
+          if (angular.isUndefined(element)) {
+              toastr.error('El uso de suelo no existe, seleccione un valor correcto');
+              vm.touch = false;
+              return false;
+          }
+          else vm.license.compatibility_certificate.land_use_id = element.id;
+        }
+        
+        if(vm.license.compatibility_certificate != null && !angular.isUndefined(vm.license.compatibility_certificate.land_use_description_id)){
+          let element = vm.landUsesDesc.find(x => x.descripcion == vm.license.compatibility_certificate.land_use_description_id);
+          if (angular.isUndefined(element)) {
+              toastr.error('La descripción de uso de suelo no existe, seleccione un valor correcto');
+              vm.touch = false;
+              return false;
+          }
+          else vm.license.compatibility_certificate.land_use_description_id = element.id;
+        }
+
+        return true;
+      };
+
+      const restoreLandUses = async () => {
+        if(vm.license.compatibility_certificate != null && !angular.isUndefined(vm.license.compatibility_certificate.land_use_id)){
+          let element = vm.landUses.find(x => x.id == vm.license.compatibility_certificate.land_use_id);
+          if (angular.isUndefined(element)) {
+              toastr.error('El uso de suelo no existe, seleccione un valor correcto');
+              vm.touch = false;
+              return false;
+          }
+          else{             
+            getLandUsesDescs();
+            vm.license.compatibility_certificate.land_use_id = element.nombre;
+          }
+        }
+
+        await sleep(1000);//sleep validation to get response from land use descriptions
+        if(vm.license.compatibility_certificate != null && !angular.isUndefined(vm.license.compatibility_certificate.land_use_description_id)){
+          let element = vm.landUsesDesc.find(x => x.id == vm.license.compatibility_certificate.land_use_description_id);
+          console.log(element);
+          if (angular.isUndefined(element)) {
+              toastr.error('La descripción de uso de suelo no existe, seleccione un valor correcto');
+              vm.touch = false;
+              return false;
+          }
+          else vm.license.compatibility_certificate.land_use_description_id = element.descripcion;
+        }
+        $scope.$digest();
+      };
+
     },
     resolve: {
       loadModule: ['$ocLazyLoad', function ($ocLazyLoad) {

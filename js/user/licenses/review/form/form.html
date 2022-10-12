@@ -53,7 +53,7 @@
                   <label for="im-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
                   <input type="number" class="form-control" id="im-{{item.iGroup}}-{{$index}}" required disabled
                     ng-value ="$ctrl.license[item.iGroup].sup_total_amp_reg_const = 
-                      $ctrl.license[item.iGroup].sotano + $ctrl.license[item.iGroup].sup_cons_pb + 
+                      $ctrl.license[item.iGroup].sotano + $ctrl.license[item.iGroup].planta_baja + 
                       $ctrl.license[item.iGroup].mezzanine + $ctrl.license[item.iGroup].primer_piso +
                       $ctrl.license[item.iGroup].segundo_piso + $ctrl.license[item.iGroup].tercer_piso + 
                       $ctrl.license[item.iGroup].cuarto_piso + $ctrl.license[item.iGroup].quinto_piso + 
@@ -64,7 +64,7 @@
                 <!-- textarea -->
                 <div class="form-group" ng-if="field.type == 3">
                   <label for="ta-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
-                  <textarea class="form-control" id="ta-{{item.iGroup}}-{{$index}}" rows="3" required
+                  <textarea class="form-control" id="ta-{{item.iGroup}}-{{$index}}" rows="3"
                     ng-model="$ctrl.license[item.iGroup][field.field]"></textarea>
                 </div>
 
@@ -72,7 +72,8 @@
                 <div class="form-group" ng-if="field.type == 4">
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" id="cc{{item.iGroup}}-{{$index}}" name="cc{{item.iGroup}}-{{$index}}"
-                      class="custom-control-input" ng-model="$ctrl.license[item.iGroup][field.field]" ng-init="$ctrl.license[item.iGroup][field.field] = false">
+                      class="custom-control-input" 
+                      ng-model="$ctrl.license[item.iGroup][field.field]">
                     <label class="custom-control-label" for="cc{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
                   </div>
                 </div>
@@ -83,7 +84,9 @@
                   <input type="date" class="form-control" ng-model="$ctrl.license[item.iGroup][field.field]">
                 </div>
 
-                <!-- radio -->                
+                <!-- radio -->        
+                
+                <!-- value="{{option.value}}" -->
                 <div class="form-group" ng-if="field.type == 6">
                   <h6 class="btn-link text-center"><b>{{field.title}}</b></h6>
                   <h6 class="btn-link text-center"><b>{{$ctrl.license[item.iGroup][field.field]}}</b></h6>
@@ -159,6 +162,70 @@
                   <div class="alert alert-primary" role="alert">
                     {{field.title}}
                   </div>
+                </div>
+
+                <!-- SFD select  -->
+                <select class="custom-select" aria-label="Default select example" ng-if="field.type == 8"
+                  ng-model="$ctrl.license[item.iGroup][field.field]"
+                  ng-options="item for item in $ctrl.sfdOptions">
+                </select>
+
+                <!-- data list safety-->
+                <div class="form-group" ng-if="field.type == 96">
+                  <!-- data list -->
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="form-{{item.iGroup}}-{{$index}}">{{field.title}}</label>
+                      <input list="destList" name="folio" class="form-control" id="form-{{item.iGroup}}-{{$index}}.destino"
+                        ng-model="$ctrl.license[item.iGroup].destino" required>
+                    </div>
+                  </div>
+                  <datalist id="destList">
+                      <option ng-repeat="item in $ctrl.detinationsList" value="{{item.desc}}">
+                  </datalist>
+                </div>
+                
+                <!-- select property polygon type-->
+                <div class="form-group" ng-if="field.type == 95">
+                  <!-- data list -->
+                  <div class="col-md-12">
+                    <select class="custom-select custom-select-sm"
+                      ng-model="$ctrl.license[item.iGroup][field.field]"
+                      ng-options="item for item in $ctrl.polygonTypeOptions">
+                    </select>
+                  </div>
+                </div>
+
+                <!-- data list land uses-->
+                <div class="form-group" ng-if="field.type == 94">
+                  <!-- data list -->
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="form-{{item.iGroup}}-{{$index}}">{{field.title}}</label>
+                      <input list="landUses" name="landUses" class="form-control" id="form-{{item.iGroup}}-{{$index}}.land_use_id"
+                        ng-model="$ctrl.license[item.iGroup].land_use_id" 
+                        ng-change="$ctrl.useSelected($ctrl.license[item.iGroup].land_use_id)"
+                        required>
+                    </div>
+                  </div>
+                  <datalist id="landUses">
+                      <option ng-repeat="item in $ctrl.landUses" value="{{item.nombre}}">
+                  </datalist>
+                </div>
+
+                <!-- data list land use descreiptions visible only if land use is defined-->
+                <div class="form-group" ng-if="field.type == 93 && $ctrl.license[item.iGroup].land_use_id !== undefined">
+                  <!-- data list -->
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="form-{{item.iGroup}}-{{$index}}">{{field.title}}</label>
+                      <input list="landUseDesc" name="useDesc" class="form-control" id="form-{{item.iGroup}}-{{$index}}.land_use_description_id"
+                        ng-model="$ctrl.license[item.iGroup].land_use_description_id" required>
+                    </div>
+                  </div>
+                  <datalist id="landUseDesc">
+                      <option ng-repeat="item in $ctrl.landUsesDesc" value="{{item.descripcion}}">
+                  </datalist>
                 </div>
               </div>
             </div>

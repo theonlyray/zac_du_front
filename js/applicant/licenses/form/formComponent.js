@@ -13,10 +13,49 @@
             vm.foliosList = [
                 {id:0, folio:'No hay licencias generadas'}
             ];
+            
+            vm.detinationsList = [
+                {id:1, desc:'Casa Habitación'},
+                {id:2, desc:'Departamentos'},
+                {id:3, desc:'Viviendas'},
+                {id:4, desc:'Dormitorios'},
+                {id:5, desc:'Cuartos de Hotel'},
+                {id:6, desc:'Internados de Escuela'},
+                {id:7, desc:'Cuarteles'},
+                {id:8, desc:'Cárceles'},
+                {id:9, desc:'Correccionales'},
+                {id:10, desc:'Hospitales y similares'},
+                {id:11, desc:'Oficinas'},
+                {id:12, desc:'Despachos'},
+                {id:13, desc:'Laboratorios'},
+                {id:14, desc:'Aulas'},
+                {id:15, desc:'Pasillos'},
+                {id:16, desc:'Escaleras'},
+                {id:17, desc:'Rampas'},
+                {id:18, desc:'Vestíbulos'},
+                {id:19, desc:'Pasajes de acceso libre al público'},
+                {id:20, desc:'Estadios'},
+                {id:21, desc:'Lugares de Reunión sin asientos individuales'},
+                {id:22, desc:'Bibliotecas'},
+                {id:23, desc:'Templos'},
+                {id:24, desc:'Cines'},
+                {id:25, desc:'Teatros'},
+                {id:26, desc:'Gimnasion'},
+                {id:27, desc:'Salones de baile'},
+                {id:28, desc:'Restaurantes'},
+                {id:29, desc:'Salas de juego y similares'},
+                {id:30, desc:'Comercios'},
+                {id:31, desc:'Fabricas'},
+                {id:32, desc:'Bodegas'},
+                {id:33, desc:'Azoteas con pendientes mayor a 5%'},
+                {id:34, desc:'Azoteas con pendientes no mayor a 5%, otras cubiertas cualquier pendiente'},
+                {id:35, desc:'Volados en vía pública, marquesinas, balcones y similares'},
+                {id:36, desc:'Garajes y Estacionamientso para vehículos'},
+            ];
 
             vm.sfdOptions = [
                 'Subdivición',
-                'Fución',
+                'Fusión',
                 'Desmebración',
             ];
 
@@ -34,7 +73,7 @@
                     console.log(payload.id);
 
                     if (payload.id == 22) {                        
-                        vm.requestData.sfd = { descripcion : vm.sfdOptions[0] };
+                        vm.requestData.s_f_d = { descripcion : vm.sfdOptions[0] };
                     }
                     getFolios();
                 }
@@ -84,8 +123,10 @@
                         if (!backgroundsVerified) return;
                     }else if(vm.typeId >= 17 && vm.typeId <= 20){
                         let adsVerified = checkAd();
+                    }else if (vm.typeId == 14) { //safety certificate
+                        let safetyVerified = checkSafetyDestinity();
+                        if (!safetyVerified) return;
                     }
-                    
                     console.log(vm.requestData);
                     const response  = await appService.axios('post', 'licencias', vm.requestData);
                     vm.touch = false;
@@ -104,6 +145,20 @@
                 }else {
                     toastr.warning('El proceso a comenzado, espera un momento')
                 }
+            };
+
+            const checkSafetyDestinity = () => {
+                if(vm.requestData.safety != null && !angular.isUndefined(vm.requestData.safety.destino)){
+                    let element = vm.detinationsList.find(x => x.desc == vm.requestData.safety.destino);
+                    if (angular.isUndefined(element)) {
+                        toastr.error('El destino de piso o cubierta no existe, seleccione un valor correcto');
+                        vm.touch = false;
+                        return false;
+                    }
+                    else vm.requestData.safety.destino = element.id;
+                }
+                
+                return true;
             };
 
             const checkBackgrounds = () => {
@@ -141,7 +196,7 @@
             };
 
             const checkAd = () => {
-                vm.requestData.ad.colocacion = (vm.requestData.ad.colocacion == 'true');
+                // vm.requestData.ad.colocacion = (vm.requestData.ad.colocacion == 'true');
                 if (vm.requestData.ad.tipo == 'Otro') vm.requestData.ad.tipo = vm.requestData.ad.tipo_descripcion;
 
             };

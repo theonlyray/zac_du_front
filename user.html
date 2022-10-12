@@ -107,7 +107,6 @@
                                 <span class="nav-link-text"><b>Departamento</b></span>
                               </div>
                             </a>
-                            <!-- ng-show="vm.tipo === 'id_5ebafe3b361083.91981512' || vm.tipo === 3" -->
                             <ul class="nav collapse" id="dep" data-bs-parent="#navbarVerticalCollapse">
                               <li class="nav-item" ng-if="vm.utype == 11">
                                 <a class="nav-link" href="#!departamentos">
@@ -156,6 +155,16 @@
                                             <i class="fas fa-archive"></i>
                                         </span>
                                         <span class="nav-link-text">Documentos</span>
+                                    </div>
+                                </a>
+                              </li>                
+                              <li class="nav-item" ng-if="vm.utype <=3 || vm.utype == 11">
+                                <a class="nav-link" href="#!usos" ng-if="vm.utype <=3 || vm.utype == 11">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-icon">
+                                            <i class="fas fa-globe"></i>
+                                        </span>
+                                        <span class="nav-link-text">Usos de Suelo</span>
                                     </div>
                                 </a>
                               </li>                

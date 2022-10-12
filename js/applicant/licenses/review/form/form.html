@@ -55,7 +55,7 @@
                   <label for="im-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
                   <input type="number" class="form-control" id="im-{{item.iGroup}}-{{$index}}" required disabled
                     ng-value ="$ctrl.license[item.iGroup].sup_total_amp_reg_const = 
-                      $ctrl.license[item.iGroup].sotano + $ctrl.license[item.iGroup].sup_cons_pb + 
+                      $ctrl.license[item.iGroup].sotano + $ctrl.license[item.iGroup].planta_baja + 
                       $ctrl.license[item.iGroup].mezzanine + $ctrl.license[item.iGroup].primer_piso +
                       $ctrl.license[item.iGroup].segundo_piso + $ctrl.license[item.iGroup].tercer_piso + 
                       $ctrl.license[item.iGroup].cuarto_piso + $ctrl.license[item.iGroup].quinto_piso + 
@@ -161,6 +161,21 @@
                   <div class="alert alert-primary" role="alert">
                     {{field.title}}
                   </div>
+                </div>
+
+                <!-- data list safety-->
+                <div class="form-group" ng-if="field.type == 96">
+                  <!-- data list -->
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="form-{{item.iGroup}}-{{$index}}">{{field.title}}</label>
+                      <input list="destList" name="folio" class="form-control" id="form-{{item.iGroup}}-{{$index}}.destino"
+                        ng-model="$ctrl.license[item.iGroup].destino" required>
+                    </div>
+                  </div>
+                  <datalist id="destList">
+                      <option ng-repeat="item in $ctrl.detinationsList" value="{{item.desc}}">
+                  </datalist>
                 </div>
 
                 <!-- SELECT sfd-->

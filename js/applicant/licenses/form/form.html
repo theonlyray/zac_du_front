@@ -48,7 +48,7 @@
                     <input type="number" class="form-control" id="im-{{item.iGroup}}-{{$index}}" required disabled
                       ng-init="$ctrl.requestData[item.iGroup][field.field] = field.value"
                       ng-value ="$ctrl.requestData[item.iGroup].sup_total_amp_reg_const = 
-                        $ctrl.requestData[item.iGroup].sotano + $ctrl.requestData[item.iGroup].sup_cons_pb + 
+                        $ctrl.requestData[item.iGroup].sotano + $ctrl.requestData[item.iGroup].planta_baja + 
                         $ctrl.requestData[item.iGroup].mezzanine + $ctrl.requestData[item.iGroup].primer_piso +
                         $ctrl.requestData[item.iGroup].segundo_piso + $ctrl.requestData[item.iGroup].tercer_piso + 
                         $ctrl.requestData[item.iGroup].cuarto_piso + $ctrl.requestData[item.iGroup].quinto_piso + 
@@ -223,13 +223,24 @@
                     </div>
                   </div>
 
-                  <!-- SELECT sfd-->
-                  <div class="form-group" ng-if="field.type == 8">
-                    <h6 class="btn-link text-center">{{fielt.title}}</h6>
-                    <select class="custom-select custom-select-sm mb-3" name="cc{{iGroup}}-{{$index}}" required
-                      ng-model="$ctrl.requestData[item.iGroup][field.field]"
-                      ng-options="item for item in $ctrl.sfdOptions">
-                    </select>
+                  <!-- SFD select  -->
+                  <select class="custom-select" aria-label="Default select example" ng-if="field.type == 8"
+                    ng-model="$ctrl.requestData[item.iGroup][field.field]"
+                    ng-options="item for item in $ctrl.sfdOptions">
+                  </select>
+                  <!-- data list safety-->
+                  <div class="form-group" ng-if="field.type == 96">
+                    <!-- data list -->
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="form-{{item.iGroup}}-{{$index}}">{{field.title}}</label>
+                        <input list="destList" name="folio" class="form-control" id="form-{{item.iGroup}}-{{$index}}.destino"
+                          ng-model="$ctrl.requestData[item.iGroup].destino" required>
+                      </div>
+                    </div>
+                    <datalist id="destList">
+                        <option ng-repeat="item in $ctrl.detinationsList" value="{{item.desc}}">
+                    </datalist>
                   </div>
                 </div>
               </div>

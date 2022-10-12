@@ -146,7 +146,7 @@
                   <div class="d-flex justify-content-between align-items-center mb-3 mb-3">
                     <div class="form-check"></div><a class="nav-link-style fs-ms" href="password-recovery.html">¿Olvidaste tu contraseña?</a>
                   </div>
-                  <button class="btn btn-primary d-block w-100" type="submit" ng-disabled="login.$invalid">Iniciar</button>
+                  <button class="btn btn-primary-mpio d-block w-100" type="submit" ng-disabled="login.$invalid">Iniciar</button>
                   <p class="fs-sm pt-3 mb-0">¿No tienes una cuenta? <a href='#' class='fw-medium' data-view='#modal-signup-view'>Registro</a></p>
                 </form>                
               </div>
@@ -222,7 +222,7 @@
                         <!-- <option ng-repeat="col in vm.colegios">{{col.descripcion}}</option> -->
                         </select>
                     </div>
-                    <button class="btn btn-primary d-block w-100" type="submit" ng-disabled="regist.$invalid">Registro</button>
+                    <button class="btn btn-primary-mpio d-block w-100" type="submit" ng-disabled="regist.$invalid">Registro</button>
                     <p class="fs-sm pt-3 mb-0">¿Ya tienes una cuenta? <a href='#' class='fw-medium' data-view='#modal-signin-view'>Iniciar</a></p>
                 </form>
                 <form class="needs-validation" novalidate ng-show="vm.showPartForm" ng-submit="vm.request($event,vm.regist,1)" name="registPart">
@@ -267,7 +267,7 @@
                           <input class="form-control" type="text" id="cp_par" placeholder="C&oacute;digo Postal" required required ng-model="vm.regist.cp">
                         </div>
                     </div>
-                    <button class="btn btn-primary d-block w-100" type="submit" ng-disabled="regist.$invalid">Registro</button>
+                    <button class="btn btn-primary-mpio d-block w-100" type="submit" ng-disabled="regist.$invalid">Registro</button>
                     <p class="fs-sm pt-3 mb-0">¿Ya tienes una cuenta? <a href='#' class='fw-medium' data-view='#modal-signin-view'>Iniciar</a></p>
                 </form>
               </div>
@@ -279,119 +279,12 @@
       <!-- Remove "navbar-sticky" class to make navigation bar scrollable with the page.-->
       <header class="header navbar navbar-expand-lg navbar-light navbar-floating navbar-sticky" data-scroll-header data-fixed-element>
         <div class="container px-0 px-xl-3">
-          <button class="navbar-toggler ms-n2 me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#primaryMenu"><span class="navbar-toggler-icon"></span></button><a class="navbar-brand flex-shrink-0 order-lg-1 mx-auto ms-lg-0 pe-lg-2 me-lg-4" href="index.html"><img class="d-none d-lg-block" src="img/logo/logo-clear.png" alt="Around" width="153"><img class="d-lg-none" src="https://www.zacatecas.gob.mx/wp-content/uploads/2021/10/favicon.png" alt="Around" width="58"></a>
-          <div class="d-flex align-items-center order-lg-3 ms-lg-auto"><a class="nav-link-style fs-sm text-nowrap" href="#modal-signin" data-bs-toggle="modal" data-view="#modal-signin-view"><i class="ai-user fs-xl me-2 align-middle"></i>Ingresa</a><a class="btn btn-primary ms-grid-gutter d-none d-lg-inline-block" href="#modal-signin" data-bs-toggle="modal" data-view="#modal-signup-view">Registro</a></div>
+          <button class="navbar-toggler ms-n2 me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#primaryMenu"><span class="navbar-toggler-icon"></span></button><a class="navbar-brand flex-shrink-0 order-lg-1 mx-auto ms-lg-0 pe-lg-2 me-lg-4" href="index.html"><img class="d-none d-lg-block" src="img/logo/logo-clear.png" alt="Around" width="253"><img class="d-lg-none" src="https://www.zacatecas.gob.mx/wp-content/uploads/2021/10/favicon.png" alt="Around" width="58"></a>
+          <div class="d-flex align-items-center order-lg-3 ms-lg-auto"><a class="nav-link-style fs-sm text-nowrap" href="#modal-signin" data-bs-toggle="modal" data-view="#modal-signin-view"><i class="ai-user fs-xl me-2 align-middle"></i>Ingresar</a><a class="btn btn-primary-mpio ms-grid-gutter d-none d-lg-inline-block" href="#modal-signin" data-bs-toggle="modal" data-view="#modal-signup-view">Registro</a></div>
           <div class="offcanvas offcanvas-collapse order-lg-2" id="primaryMenu">
             <div class="offcanvas-header navbar-shadow">
               <h5 class="mt-1 mb-0">Menu</h5>
               <button class="btn-close lead" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-              <!-- Menu-->
-              <!-- <ul class="navbar-nav">
-                <li class="nav-item dropdown dropdown-mega active"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Demos</a>
-                  <div class="dropdown-menu"><a class="dropdown-column dropdown-column-img bg-secondary" href="index.html" style="background-image: url(img/demo/menu-banner.jpg);"></a>
-                    <div class="dropdown-column"><a class="dropdown-item" href="index.html">Web Template Presentation</a><a class="dropdown-item" href="demo-business-consulting.html">Business Consulting</a><a class="dropdown-item" href="demo-shop-homepage.html">Shop Homepage</a><a class="dropdown-item" href="demo-booking-directory.html">Booking / Directory</a><a class="dropdown-item" href="demo-creative-agency.html">Creative Agency</a><a class="dropdown-item" href="demo-web-studio.html">Web Studio</a><a class="dropdown-item" href="demo-product-software.html">Product Landing - Software</a></div>
-                    <div class="dropdown-column"><a class="dropdown-item" href="demo-product-gadget.html">Product Landing - Gadget</a><a class="dropdown-item" href="demo-mobile-app.html">Mobile App Showcase</a><a class="dropdown-item" href="demo-coworking-space.html">Coworking Space</a><a class="dropdown-item" href="demo-event-landing.html">Event Landing</a><a class="dropdown-item" href="demo-marketing-seo.html">Digital Marketing &amp; SEO</a><a class="dropdown-item" href="demo-food-blog.html">Food Blog</a><a class="dropdown-item" href="demo-personal-portfolio.html">Personal Portfolio</a></div>
-                  </div>
-                </li>
-                <li class="nav-item dropdown dropdown-mega"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Templates</a>
-                  <div class="dropdown-menu">
-                    <div class="dropdown-column mb-2 mb-lg-0">
-                      <h5 class="dropdown-header">Blog</h5><a class="dropdown-item" href="blog-grid-rs.html">Grid Right Sidebar</a><a class="dropdown-item" href="blog-grid-ls.html">Grid Left Sidebar</a><a class="dropdown-item" href="blog-grid-ns.html">Grid No Sidebar</a><a class="dropdown-item" href="blog-list-rs.html">List Right Sidebar</a><a class="dropdown-item" href="blog-list-ls.html">List Left Sidebar</a><a class="dropdown-item" href="blog-list-ns.html">List No Sidebar</a><a class="dropdown-item" href="blog-single-rs.html">Single Post Right Sidebar</a><a class="dropdown-item" href="blog-single-ls.html">Single Post Left Sidebar</a><a class="dropdown-item" href="blog-single-ns.html">Single Post No Sidebar</a>
-                    </div>
-                    <div class="dropdown-column mb-2 mb-lg-0">
-                      <h5 class="dropdown-header">Portfolio</h5><a class="dropdown-item" href="portfolio-style-1.html">Grid Style 1</a><a class="dropdown-item" href="portfolio-style-2.html">Grid Style 2</a><a class="dropdown-item" href="portfolio-style-3.html">Grid Style 3</a><a class="dropdown-item" href="portfolio-single-side-gallery-grid.html">Project Side Gallery (Grid)</a><a class="dropdown-item" href="portfolio-single-side-gallery-list.html">Project Side Gallery (List)</a><a class="dropdown-item" href="portfolio-single-carousel.html">Project Carousel</a><a class="dropdown-item" href="portfolio-single-wide-gallery.html">Project Wide Gallery</a>
-                    </div>
-                    <div class="dropdown-column mb-2 mb-lg-0">
-                      <h5 class="dropdown-header">Shop</h5><a class="dropdown-item" href="shop-ls.html">Grid Left Sidebar</a><a class="dropdown-item" href="shop-rs.html">Grid Right Sidebar</a><a class="dropdown-item" href="shop-ns.html">Grid No Sidebar</a><a class="dropdown-item" href="shop-single.html">Single Product</a><a class="dropdown-item" href="checkout.html">Cart &amp; Checkout</a><a class="dropdown-item" href="order-tracking.html">Order Tracking</a>
-                    </div>
-                  </div>
-                </li>
-                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Account</a>
-                  <ul class="dropdown-menu">
-                    <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">Dashboard</a>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="dashboard-orders.html">Orders</a></li>
-                        <li><a class="dropdown-item" href="dashboard-sales.html">Sales</a></li>
-                        <li><a class="dropdown-item" href="dashboard-messages.html">Messages</a></li>
-                        <li><a class="dropdown-item" href="dashboard-followers.html">Followers</a></li>
-                        <li><a class="dropdown-item" href="dashboard-reviews.html">Reviews</a></li>
-                        <li><a class="dropdown-item" href="dashboard-favorites.html">Favorites</a></li>
-                      </ul>
-                    </li>
-                    <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">Account Settings</a>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="account-profile.html">Profile Info</a></li>
-                        <li><a class="dropdown-item" href="account-payment.html">Payment Methods</a></li>
-                        <li><a class="dropdown-item" href="account-notifications.html">Notifications</a></li>
-                      </ul>
-                    </li>
-                    <li><a class="dropdown-item" href="signin-illustration.html">Sign In - Illustration</a></li>
-                    <li><a class="dropdown-item" href="signin-image.html">Sign In - Image</a></li>
-                    <li><a class="dropdown-item" href="signin-signup.html">Sign In - Sign Up</a></li>
-                    <li><a class="dropdown-item" href="password-recovery.html">Password Recovery</a></li>
-                  </ul>
-                </li>
-                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Pages</a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="about.html">About</a></li>
-                    <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">Contacts</a>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="contacts-v1.html">Contacts v.1</a></li>
-                        <li><a class="dropdown-item" href="contacts-v2.html">Contacts v.2</a></li>
-                        <li><a class="dropdown-item" href="contacts-v3.html">Contacts v.3</a></li>
-                      </ul>
-                    </li>
-                    <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">Help Center</a>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="help-topics.html">Help Topics</a></li>
-                        <li><a class="dropdown-item" href="help-single-topic.html">Single Topic</a></li>
-                        <li><a class="dropdown-item" href="help-submit-request.html">Submit a Request</a></li>
-                      </ul>
-                    </li>
-                    <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">404 Not Found</a>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="404-simple.html">Simple Text</a></li>
-                        <li><a class="dropdown-item" href="404-illustration.html">Illustration</a></li>
-                      </ul>
-                    </li>
-                    <li class="dropdown"><a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">Coming Soon</a>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="coming-soon-image.html">Image</a></li>
-                        <li><a class="dropdown-item" href="coming-soon-illustration.html">Illustration</a></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Docs / UI Kit</a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="docs/dev-setup.html">
-                        <div class="d-flex align-items-center">
-                          <div class="fs-xl text-muted"><i class="ai-file-text"></i></div>
-                          <div class="ps-3"><span class="d-block text-heading">Documentation</span><small class="d-block text-muted">Kick-start customization</small></div>
-                        </div></a></li>
-                    <li class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="components/typography.html">
-                        <div class="d-flex align-items-center">
-                          <div class="fs-xl text-muted"><i class="ai-layers"></i></div>
-                          <div class="ps-3"><span class="d-block text-heading">UI Kit<span class="badge bg-danger ms-2">50+</span></span><small class="d-block text-muted">Flexible components</small></div>
-                        </div></a></li>
-                    <li class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="docs/changelog.html">
-                        <div class="d-flex align-items-center">
-                          <div class="fs-xl text-muted"><i class="ai-edit"></i></div>
-                          <div class="ps-3"><span class="d-block text-heading">Changelog<span class="badge bg-success ms-2">v2.4.0</span></span><small class="d-block text-muted">Regular updates</small></div>
-                        </div></a></li>
-                    <li class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="mailto:support@createx.studio">
-                        <div class="d-flex align-items-center">
-                          <div class="fs-xl text-muted"><i class="ai-life-buoy"></i></div>
-                          <div class="ps-3"><span class="d-block text-heading">Support</span><small class="d-block text-muted">support@createx.studio</small></div>
-                        </div></a></li>
-                  </ul>
-                </li>
-              </ul> -->
             </div>
           </div>
         </div>
@@ -407,12 +300,8 @@
         <div class="container pt-4 pt-md-5 pt-lg-0">
           <div class="row align-items-center">
             <div class="col-lg-4 text-center text-lg-start">
-              <h1 class="mb-3">New way to work with your team!</h1>
-              <p class="fs-lg text-muted mb-4">Collaboration on the project is fast and easy with our task management app.</p>
-              <form class="d-flex pt-4 mx-auto mx-lg-0" style="max-width: 460px;">
-                <input class="form-control me-3" type="email" placeholder="Type your email..." required>
-                <button class="btn btn-success" type="submit">Start free trial</button>
-              </form>
+              <h1 class="mb-3">La nueva manera de gestionar tus tr&aacute;mites.</h1>
+              <p class="fs-lg text-muted mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, est perspiciatis eaque cumque, deserunt repudiandae rem cupiditate magni, obcaecati rerum voluptatum fugiat magnam id praesentium. Laudantium nemo odio ex incidunt!</p>
             </div>
             <div class="col-xl-7 col-lg-8 offset-xl-1 pt-lg-3">
               <div class="tns-carousel-wrapper bg-size-cover mx-auto pt-6 pb-2" style="max-width: 705px; background-image: url(img/demo/software-landing/slider/shape.png);">
@@ -549,25 +438,65 @@
     <footer class="footer bg-dark pt-5 pb-4">
       <div class="container pb-2 text-center text-md-start">
         <div class="row pt-md-2 pb-3">
-          <div class="col-lg-3 col-md-4 pb-4"><a class="d-inline-block mb-3" href="index.html" style="width: 153px;"><img src="img/logo/logo-clear.png" alt="Around"></a>
-            <p class="fs-sm text-light opacity-50 mb-0">Team collaboration made easy!</p>
+          <div class="col-lg-3 col-md-4 pb-4"><a class="d-inline-block mb-3" href="index.html"><img src="https://www.zacatecas.gob.mx/wp-content/uploads/2021/11/vertical-white.png" alt width="300" height="286"></a>            
           </div>
-          <div class="col-md-5 pt-2 pb-4">
+          <div class="col-md-3 pt-2 pb-4">
             <div class="widget widget-light">
-              <h4 class="widget-title mb-3">Support</h4>
+              <h4 class="widget-title mb-3">Tel&eacute;fonos</h4>
               <div class="d-lg-flex">
                 <ul class="me-lg-5">
-                  <li><a class="widget-link" href="mailto:support@example.com"><i class="ai-mail fs-lg me-2"></i>support@example.com</a></li>
+                  <li><a class="widget-link" href="tel:9223005">9223005</a></li>
+                  <li><a class="widget-link" href="tel:9223005">9225350</a></li>
+                  <li><a class="widget-link" href="tel:9223005">9220180</a></li>
+                  <li><a class="widget-link" href="tel:9223005">9245320</a></li>
+                  <li><a class="widget-link" href="tel:9223005">4915000</a></li>
+                  <li><a class="widget-link" href="tel:9223005">911</a></li>
+                  <li><a class="widget-link" href="tel:9223005">089</a></li>
                 </ul>
                 <ul>
-                  <li><a class="widget-link" href="tel:9107848015"><i class="ai-phone fs-lg me-2"></i>910-784-8015</a></li>
+                  <li><a class="widget-link">Cruz Roja Mexicana</a></li>
+                  <li><a class="widget-link">Bomberos</a></li>
+                  <li><a class="widget-link">Policía Estatal Preventiva</a></li>
+                  <li><a class="widget-link">Policía de Seguridad Vial</a></li>
+                  <li><a class="widget-link">Ciudad Administrativa</a></li>
+                  <li><a class="widget-link">Emergencias</a></li>
+                  <li><a class="widget-link">Denuncia Anónima</a></li>
                 </ul>
               </div>
             </div>
           </div>
           <div class="col-md-3 pt-2 pb-4">
             <div class="widget widget-light">
-              <h4 class="widget-title mb-3">Follow</h4><a class="btn-social bs-outline bs-light bs-facebook bs-lg me-2 mb-2" href="https://www.facebook.com/gobiernozac/"><i class="ai-facebook"></i></a><a class="btn-social bs-outline bs-light bs-twitter bs-lg me-2 mb-2" href="https://twitter.com/gobiernozac"><i class="ai-twitter"></i></a><a class="btn-social bs-outline bs-light bs-instagram bs-lg me-2 mb-2" href="https://www.instagram.com/gobiernozac/"><i class="ai-instagram"></i></a><a class="btn-social bs-outline bs-light bs-youtube bs-lg mb-2" href="https://www.youtube.com/user/gobiernozac"><i class="ai-youtube"></i></a>
+              <h4 class="widget-title mb-3">Lo m&aacute;s destacado</h4>
+              <div class="d-lg-flex">
+                <ul class="me-lg-5">
+                  <li><a class="widget-link"  href="http://www.finanzas.gob.mx/" target="_blank" rel="noopener">Secretaría de Finanzas</a></li>
+                  <li><a class="widget-link"  href="http://www.seduzac.gob.mx/portal/" target="_blank" rel="noopener">Secretaría de Educación</a></li>
+                  <li><a class="widget-link"  href="https://www.zacatecastravel.com/" target="_blank" rel="noopener">Secretaría de Turismo</a></li>
+                  <li><a class="widget-link"  href="https://www.saludzac.gob.mx/home/" target="_blank" rel="noopener">Secretaría de Salud</a></li>
+                  <li><a class="widget-link"  href="http://transparencia.zacatecas.gob.mx/" target="_blank" rel="noopener">Transparencia</a></li>
+                  <li><a class="widget-link"  href="http://www.pgje.zacatecas.gob.mx/sitio/" target="_blank" rel="noopener">FGJE</a></li>
+                  <li><a class="widget-link"  href="https://www.gob.mx/" target="_blank" rel="noopener">Gobierno de México</a></li>
+                  <li><a class="widget-link"  href="https://www.congresozac.gob.mx/64/inicio" target="_blank" rel="noopener">Poder Legislativo Zacatecas</a></li>
+                  <li><a class="widget-link"  href="https://www.tsjzac.gob.mx/" target="_blank" rel="noopener">Poder Judicial Zacatecas</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 pt-2 pb-4">
+            <div class="widget widget-light">
+              <h4 class="widget-title mb-3">Contacto</h4>
+              <div class="d-lg-flex">
+                <ul class="me-lg-5">
+                  <li><a class="widget-link">Blvd. Héroes de Chapultepec No. 1902</a></li>
+                  <li><a class="widget-link">Ciudad Gobierno</a></li>
+                  <li><a class="widget-link">C.P. 98160</a></li>
+                  <li><a class="widget-link">Zacatecas, Zac.</a></li>
+                  <li><a class="widget-link">Tel. 492 491 5000</a></li>
+                  <li><a class="widget-link"></a></li>
+                  <li><a class="widget-link" href="mailto:contacto@zacatecas.gob.mx">contacto@zacatecas.gob.mx</a></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

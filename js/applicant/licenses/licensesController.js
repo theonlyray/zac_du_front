@@ -21,7 +21,10 @@
             const licenses = await appService.axios('get',`licencias?estatus=${vm.licStat}`);
             if (licenses.status === 204) toastr.info('Aún no existen licencias.');
             else if (licenses.status === 400) toastr.warning(licenses.data.message);
-            else vm.licenses = licenses.data;
+            else{ 
+                vm.licenses = licenses.data;
+                vm.licStat == 'Proceso' ? syncOrders(licenses.data) : null;
+            }
 
             $scope.$digest();
         };
@@ -83,10 +86,19 @@
             console.log(vm.license);
         };
         
+        vm.request = async () => {
+            if (vm.license.license_type_id >= 17 && vm.license.license_type_id <= 20){
+                let response = await appService.axios('get',`licencias/${vm.license.id}/solicitud`, null, 1);
+                let fileURL = window.URL.createObjectURL(response.data);
+                $window.open(fileURL, '_blank');
+                vm.touch = false;    
+            }else toastr.info('Developing...');
+            
+        };
+        
         vm.pdf = async () => {
 
             let response = await appService.axios('get',`licencias/${vm.license.id}/licencia`, null, 1);
-            console.log(response);
 			let fileURL = window.URL.createObjectURL(response.data);
 			$window.open(fileURL, '_blank');
             vm.touch = false;
@@ -107,6 +119,23 @@
                 }else toastr.error(response.data.message);
                 vm.touch = false;
             } else toastr.warning('Proceso en ejecución, espera un momento');
+        };
+
+        const syncOrders = async licenses =>{
+            let ordersIds = [];
+            for (const iterator of licenses)
+                if (iterator.order != null) 
+                    ordersIds.push(iterator.order.folio_api);                
+            
+            if (ordersIds.length > 0) {
+                // let response = await appService.axios('patch', 'pagos', {ordersIds : ordersIds});
+
+                // if (response.status == 200 && response.data.somePayment) {
+                //     for (const iterator of response.data.data) {
+                //         toastr.success(`Ya puedes descargar tu licenecia autorizada con folio ${iterator}`);
+                //     }
+                // }
+            }
         };
     }
 

@@ -11,11 +11,9 @@
         vm.page = 1;
         //?
         //?permission
-        vm.canValidateEntry   = false;
-        vm.canValidateFirst   = false;
-        vm.canValidateSecond  = false;
-        vm.canValidateThird   = false;
-        vm.canCreateOrder     = false;
+        vm.canValidateEntry     = false;
+        vm.canValidateDocsPlans = false;
+        vm.canCreateOrder       = false;
 
         vm.utype = $window.sessionStorage.getItem('__utype');
       
@@ -32,17 +30,10 @@
             let canValidateEntry =  usrPermissionsArray.find(o => o.name === 'license.validateEntry');
             if (angular.isDefined(canValidateEntry)) vm.canValidateEntry = true;
             
-            /**first validation */
-            let canValidateFirst =  usrPermissionsArray.find(o => o.name === 'license.validateFirstReview');
-            if (angular.isDefined(canValidateFirst)) vm.canValidateFirst = true;
+            /**docs plans validation */
+            let canValidateDocsPlans =  usrPermissionsArray.find(o => o.name === 'license.validateDocsPlans');
+            if (angular.isDefined(canValidateDocsPlans)) vm.canValidateDocsPlans = true;
             
-            /**second validation */
-            let canValidateSecond =  usrPermissionsArray.find(o => o.name === 'license.validateSecondReview');
-            if (angular.isDefined(canValidateSecond)) vm.canValidateSecond = true;
-            
-            /**third validation */
-            let canValidateThird =  usrPermissionsArray.find(o => o.name === 'license.validateThirdReview');
-            if (angular.isDefined(canValidateThird)) vm.canValidateThird = true;
 
             let canCreateOrder =  usrPermissionsArray.find(o => o.name === 'order.store');
             if (angular.isDefined(canCreateOrder)) vm.canCreateOrder = true;
@@ -107,16 +98,8 @@
                 vm.statusInt = 4;
                 break;
               case 1: 
-                vm.stepValLabel = 'validar la primer revisión';
+                vm.stepValLabel = 'validar los documentos y planos';
                 vm.statusInt = 5;            
-                break;
-              case 2: 
-                vm.stepValLabel = 'validar la segunda revisión'; 
-                vm.statusInt = 7;
-                break;
-              case 3: 
-                vm.stepValLabel = 'validar la tercer revisión'; 
-                vm.statusInt = 9;
                 break;
               default: 
                 vm.stepValLabel = 'No option selected'; 
@@ -132,20 +115,12 @@
                 vm.statusInt = 2;
                 break;           
               case 1: 
-                vm.stepObsLabel = 'Agregar Obsercaciones en la primer revisión';
+                vm.stepObsLabel = 'Agregar Observaciones al trámite';
                 vm.statusInt = 6;            
                 break;
               case 2: 
-                vm.stepObsLabel = 'Agregar Obsercaciones en la segunda revisión'; 
-                vm.statusInt = 8;
-                break;
-              case 3: 
-                vm.stepObsLabel = 'Agregar Obsercaciones en la tercer revisión'; 
-                vm.statusInt = 10;
-                break;
-              case 4: 
                 vm.stepObsLabel = 'Rechazar'; 
-                vm.statusInt = 16;
+                vm.statusInt = 9;
                 break;
               default: 
                 vm.stepObsLabel = 'No option selected'; 
@@ -175,6 +150,14 @@
         vm.pdf = async () => {
 
           let response = await usrService.axios('get',`licencias/${vm.license.id}/licencia`, null, 1);
+          console.log(response);
+          let fileURL = window.URL.createObjectURL(response.data);
+          $window.open(fileURL, '_blank');
+          vm.touch = false;
+        };
+        
+        vm.preview = async () => {
+          let response = await usrService.axios('get',`licencias/${vm.license.id}/preview`, null, 1);
           console.log(response);
           let fileURL = window.URL.createObjectURL(response.data);
           $window.open(fileURL, '_blank');

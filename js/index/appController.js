@@ -30,13 +30,13 @@
     vm.changeToDro = () =>{
       vm.showDroForm  = true;
       vm.showPartForm = false;
-      vm.regist.role_id = 8;
+      vm.regist.role_id = 9;
     };
     
     vm.changeToPart = () =>{
       vm.showDroForm  = false;
       vm.showPartForm = true;
-      vm.regist.role_id = 9;
+      vm.regist.role_id = 10;
     };
 
     vm.request = (e,data,flag) => {

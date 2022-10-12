@@ -7,10 +7,8 @@
 
       vm.docType = false; //?filter byt req type
 
-      vm.canValidateEntry   = false;
-      vm.canValidateFirst   = false;
-      vm.canValidateSecond  = false;
-      vm.canValidateThird   = false;      
+      vm.canValidateEntry     = false;
+      vm.canValidateDocsPlans = false;
 
       vm.statusInt = 4; //?status value to send in changeStatus method
       
@@ -27,17 +25,10 @@
         let canValidateEntry =  usrPermissionsArray.find(o => o.name === 'license.validateEntry');
         if (angular.isDefined(canValidateEntry)) vm.canValidateEntry = true;
         
-        /**first validation */
-        let canValidateFirst =  usrPermissionsArray.find(o => o.name === 'license.validateFirstReview');
-        if (angular.isDefined(canValidateFirst)) vm.canValidateFirst = true;
-        
-        /**second validation */
-        let canValidateSecond =  usrPermissionsArray.find(o => o.name === 'license.validateSecondReview');
-        if (angular.isDefined(canValidateSecond)) vm.canValidateSecond = true;
-        
-        /**third validation */
-        let canValidateThird =  usrPermissionsArray.find(o => o.name === 'license.validateThirdReview');
-        if (angular.isDefined(canValidateThird)) vm.canValidateThird = true;                
+        /**docs plans validation */
+        let canValidateDocsPlans =  usrPermissionsArray.find(o => o.name === 'license.validateDocsPlans');
+        if (angular.isDefined(canValidateDocsPlans)) vm.canValidateDocsPlans = true;
+
         $scope.$digest();
       };
 
@@ -124,84 +115,68 @@
             vm.statusInt = 4;
             break;
           case 1: 
-            vm.stepValLabel = 'validar la primer revisión';
+            vm.stepValLabel = 'validar los documentos y planos';
             vm.statusInt = 5;            
-            break;
-          case 2: 
-            vm.stepValLabel = 'validar la segunda revisión'; 
-            vm.statusInt = 7;
-            break;
-          case 3: 
-            vm.stepValLabel = 'validar la tercer revisión'; 
-            vm.statusInt = 9;
             break;
           default: 
             vm.stepValLabel = 'No option selected'; 
             vm.statusInt = 4;
             break;
         }
-      };
+    };
       
-      vm.setObsLabels = flag => {
+    vm.setObsLabels = flag => {
         switch (flag) {
           case 0: 
             vm.stepObsLabel = 'Agregar observaciones a los requisitos a ';
             vm.statusInt = 2;
             break;           
           case 1: 
-            vm.stepObsLabel = 'Agregar Obsercaciones en la primer revisión';
+            vm.stepObsLabel = 'Agregar Observaciones al trámite';
             vm.statusInt = 6;            
             break;
           case 2: 
-            vm.stepObsLabel = 'Agregar Obsercaciones en la segunda revisión'; 
-            vm.statusInt = 8;
-            break;
-          case 3: 
-            vm.stepObsLabel = 'Agregar Obsercaciones en la tercer revisión'; 
-            vm.statusInt = 10;
-            break;
-          case 4: 
             vm.stepObsLabel = 'Rechazar'; 
-            vm.statusInt = 16;
+            vm.statusInt = 9;
             break;
           default: 
             vm.stepObsLabel = 'No option selected'; 
             vm.statusInt = 4;
             break;
         }
-      };
+    };
 
-      vm.observations = async flag => {
-        if (vm.touch === false) {
-            vm.touch = true;
-            const licId = $window.sessionStorage.getItem('__licId');
+    vm.observations = async flag => {
+      if (vm.touch === false) {
+          vm.touch = true;
+          const licId = $window.sessionStorage.getItem('__licId');
 
-            vm.license.estatus = flag;
-            
-            const response = await usrService.axios('patch',`licencias/${licId}/observaciones`, vm.license);
-            if (response.status === 200) {
-                toastr.success('Actualizado con exito');
-                vm.license = response.data;
-                $scope.$digest();
-            }else toastr.error(response.data.message);
-            vm.touch = false;
-        } else toastr.warning('Proceso en ejecución, espera un momento');
-      };
+          vm.license.estatus = flag;
+          
+          const response = await usrService.axios('patch',`licencias/${licId}/observaciones`, vm.license);
+          if (response.status === 200) {
+              toastr.success('Actualizado con exito');
+              vm.license = response.data;
+              $scope.$digest();
+          }else toastr.error(response.data.message);
+          vm.touch = false;
+      } else toastr.warning('Proceso en ejecución, espera un momento');
+    };
 
-      vm.changeStatus = async flag => {
-        if (vm.touch === false) {
-            vm.touch = true;
-            const licId = $window.sessionStorage.getItem('__licId');
+    vm.changeStatus = async flag => {
+      if (vm.touch === false) {
+          vm.touch = true;
+          const licId = $window.sessionStorage.getItem('__licId');
 
-            vm.license.estatus = flag;
-            
-            const response = await usrService.axios('patch',`licencias/${licId}`, vm.license);
-            if (response.status === 200) {
-                toastr.success('Actualizado con exito');
-                vm.init();
-            }else toastr.error(response.data.message);
-            vm.touch = false;
-        } else toastr.warning('Proceso en ejecución, espera un momento');
+          vm.license.estatus = flag;
+          
+          const response = await usrService.axios('patch',`licencias/${licId}`, vm.license);
+          if (response.status === 200) {
+              toastr.success('Actualizado con exito');
+              vm.init();
+          }else toastr.error(response.data.message);
+          vm.touch = false;
+      } else toastr.warning('Proceso en ejecución, espera un momento');
     };
     }
   

@@ -4,6 +4,8 @@
     function orderController($scope, usrService, $window) {
         const vm = this;
         
+        const mountToAddConst = 289; //mount to add to construction amount
+
         vm.touch = false;
 
         vm.data_page=5;
@@ -41,15 +43,70 @@
             
             if (response.status == 200){ 
                 vm.license = response.data;
-                setPayloadDuties(vm.license.order);
             }
             else toastr.error(response.data.message);
             
             const duties  = await usrService.axios('get', `derechos?department=${depId}`);
 
-            if (duties.status == 200) vm.duties = duties.data;
+            if (duties.status == 200){ 
+                vm.duties = duties.data;
+                setPayloadDuties(vm.license.order);                
+            }
             else toastr.error(response.data.message);
-            $scope.$digest();
+            $scope.$digest();            
+        };
+
+        const isConstruction = license => {
+            if (license.license_type_id >= 1 && license.license_type_id <= 6 ||
+                (license.license_type_id >= 8 && license.license_type_id <= 11) ||
+                (license.license_type_id == 15) ||
+                (license.license_type_id >= 25 && license.license_type_id <= 28)){
+                return true;
+            }
+            return false;
+        };
+        
+        const isCompatibility = license => {
+            return license.license_type_id == 16;
+        };
+
+        const setConstructionCost = license =>{
+            let constructionDuty = vm.duties.find( element => element.id == 39 );
+            constructionDuty.cantidad   = 1;
+            constructionDuty.precio     = 0;
+
+            switch (license.property.poligono) {
+                case 'Colonias Populares':
+                    if (license.construction.sup_total_amp_reg_const <= 60)
+                            constructionDuty.precio = license.construction.sup_total_amp_reg_const * 40;
+                    else if(license.construction.sup_total_amp_reg_const >= 61 && license.construction.sup_total_amp_reg_const <= 100)
+                        constructionDuty.precio = (license.construction.sup_total_amp_reg_const * 48);
+                    else if(license.construction.sup_total_amp_reg_const > 100)
+                        constructionDuty.precio = (license.construction.sup_total_amp_reg_const * 59);
+                    break;
+                case 'Fraccionamientos Interes Social':
+                    if (license.construction.sup_total_amp_reg_const <= 100)
+                            constructionDuty.precio = license.construction.sup_total_amp_reg_const * 48;
+                    else if(license.construction.sup_total_amp_reg_const > 100)
+                        constructionDuty.precio = (license.construction.sup_total_amp_reg_const * 59);
+                    break;
+                case 'Zona centro y recidencial':
+                    constructionDuty.precio = license.construction.sup_total_amp_reg_const * 59;
+                    break;            
+                default:
+                    toastr.warning('Tipo de polígono incorrecto');
+                    break;
+            }
+            
+            constructionDuty.precio = constructionDuty.precio + mountToAddConst;
+            this.add(constructionDuty);
+        };
+        
+        const setCompatibilityCost = license =>{
+            let constructionDuty = vm.duties.find( element => element.id == 47 );
+            constructionDuty.cantidad   = 1;
+            constructionDuty.precio     = license.compatibility_certificate.land_use_description.costo;
+            this.add(constructionDuty);
         };
 
         const setPayloadDuties = data => {
@@ -58,26 +115,38 @@
             console.log(data);
             if (data != null) {
                 vm.methodFlag = 'patch';
-                for (const iterator of data.duties) {                    
-                    iterator.cantidad = Number(iterator.pivot.cantidad);
-                    iterator.total = Number(iterator.pivot.total);
+                for (const iterator of data.duties) {
+                    iterator.cantidad = Number(iterator.cantidad);
+                    iterator.total = Number(iterator.total);
                     vm.dutiesPayload.push(iterator);
                     calculate(vm.dutiesPayload);
                 }
+            }else{ 
+                if (isConstruction(vm.license)) setConstructionCost(vm.license);
+                if (isCompatibility(vm.license)) setCompatibilityCost(vm.license);
             }
         };
         
-        vm.add = async (item) => {            
+        vm.add = async (item) => {
+            console.log(item);      
             if (!angular.isNumber(item.cantidad)) {
                 toastr.error("Ingrese una cantidad valida"); 
             } else {
-                if (angular.isUndefined(vm.dutiesPayload.find(x => x.id == item.id))) {
-                    document.getElementById(`input_${item.id}`).disabled = true;
-                    document.getElementById(`btn_${item.id}`).disabled = true;
+                if (angular.isUndefined(vm.dutiesPayload.find(x => x.id == item.id))) {                   
+                    if (item.precio != null || item.monto != null) {
+                        let input = document.getElementById(`input_${item.id}`);
+                        input != null ? input.disabled = true : null;
 
-                    item.total = item.cantidad * item.precio;
-                    vm.dutiesPayload.push(item);
-                    calculate(vm.dutiesPayload);
+                        let btn = document.getElementById(`btn_${item.id}`);
+                        btn != null ? btn.disabled = true : null;
+
+                        item.descripcion = item.Descripcion;//to get the correct description
+                        item.precio != null ? item.monto = item.precio : null;//set to db model
+                        item.total = item.cantidad * item.monto;
+                        vm.dutiesPayload.push(item);
+                        calculate(vm.dutiesPayload);
+                    }else toastr.error("El precio es necesario"); 
+                    
                 }else toastr.warning("Este derecho ya ha sido agregado.");
                 
             }
@@ -100,7 +169,7 @@
             vm.total = 0
             if (array.length > 0) {
                 for (const iterator of array)
-                    vm.total += iterator.cantidad * iterator.precio;
+                    vm.total += iterator.cantidad * iterator.monto;
             } else vm.total = 0;
         }
 
@@ -139,7 +208,7 @@
 
                 if (response.status == 200) {
                     toastr.success("Actualización exitosa");
-                    $window.locations = '#!tramites/Proceso';
+                    $window.location.reload();
                 }else if (response.status == 422) 
                     toastr.warning(response.data.message);                
                         
@@ -155,7 +224,7 @@
                 
                 const licId = $window.sessionStorage.getItem('__licId');
 
-                const response = await usrService.axios('get',`licencias/${licId}/orden/${vm.license.order.id}/validar`);
+                const response = await usrService.axios('patch',`licencias/${licId}/orden/${vm.license.order.id}/validar`, vm.license);
 
                 if (response.status == 200) {
                     toastr.success("Actualización exitosa");

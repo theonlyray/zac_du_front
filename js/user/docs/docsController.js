@@ -5,7 +5,7 @@
         const vm = this;
         vm.touch = false;
 
-        vm.to = true;
+        vm.to = 'true';
         vm.init = async () => {
             const response = await usrService.axios('get', 'archivos');
 
@@ -25,7 +25,7 @@
                 
                 const payload = { 
                     archivo: file.base64, 
-                    para:vm.to, 
+                    para:(vm.to == "true"), 
                     nombre: file.filename,
                     college_id : null
                 };
