@@ -169,12 +169,12 @@
                       Cancelar <span class="far fa-calendar-times" data-fa-transform="shrink-2"></span>
                     </a>
                     <a class="dropdown-item text-warning"
-                      ng-if="vm.licStat == 'Autorizadas'"
+                      ng-if="vm.licStat == 'Autorizadas' && item.setTerExtFlag"
                       ng-click="vm.sublicense(item,false)">
                       Solicitar Prorroga <span class="far fa-clock" data-fa-transform="shrink-2"></span>
                     </a>
                     <a class="dropdown-item text-warning"
-                      ng-if="vm.licStat == 'Autorizadas'"
+                      ng-if="vm.licStat == 'Autorizadas' && item.setTerExtFlag"
                       ng-click="vm.sublicense(item,true)">
                       Solicitar Terminaci&oacute;n <span class="far fa-stop-circle" data-fa-transform="shrink-2"></span>
                     </a>

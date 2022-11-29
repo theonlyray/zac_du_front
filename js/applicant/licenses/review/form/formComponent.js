@@ -70,13 +70,7 @@
             // console.log(vm.foliosList);
             vm.myform = true;
             vm.license = payload;
-            vm.form = appFactory.formGroups(payload.license_type_id);
-
-            //?setting coor to map
-            // if (vm.license.property !== null) {
-            //   sessionStorage.setItem('__lat', vm.license.property.latitud);
-            //   sessionStorage.setItem('__lng', vm.license.property.longitud); 
-            // }            
+            vm.form = appFactory.formGroups(payload.license_type_id);          
             
             if (vm.license.license_type_id <= 2 ||
               (vm.license.license_type_id >= 8 && vm.license.license_type_id <= 11) ||
@@ -253,10 +247,10 @@
       };
 
       const checkAd = () => {
-        console.log(vm.license.ad.colocacion);    
-        if (vm.license.ad.colocacion == 'Colocación') vm.license.ad.colocacion = true;
-        else if (vm.license.ad.colocacion == 'Renovación') vm.license.ad.colocacion = false;
-        else vm.license.ad.colocacion = (vm.license.ad.colocacion == 'true');
+        // console.log(vm.license.ad.colocacion);    
+        // if (vm.license.ad.colocacion == 'Colocación') vm.license.ad.colocacion = true;
+        // else if (vm.license.ad.colocacion == 'Renovación') vm.license.ad.colocacion = false;
+        // else vm.license.ad.colocacion = (vm.license.ad.colocacion == 'true');
          
         // vm.license.ad.colocacion = (vm.license.ad.colocacion == 'Colocaión' ? true : false);
 

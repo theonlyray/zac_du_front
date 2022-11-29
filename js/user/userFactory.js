@@ -4,8 +4,8 @@
     function UsrFactory() {
         loadProgressBar()
         const service = {};
-        const exts = ['png', 'jpg', 'jpeg', 'pdf', 'zip', 'rar', 'dwg']
-        const img_exts = ['png', 'jpg', 'jpeg']
+        const exts = ['png', 'jpg', 'jpeg', 'pdf', 'zip', 'rar', 'dwg'];
+        const img_exts = ['png', 'jpg', 'jpeg'];
 
         /// GROUPS //
         service.formGroups = type => { return licenseGroups(type) };
@@ -73,7 +73,7 @@
                     title: 'Superficie no construida', field: 'sup_no_construida', 
                     type: 2, size: 4, value : 0, step: 0.01, min: 0,
                 },
-                { title: 'TIPO DE POLIGONO', field: 'poligono', type: 95, size: 6, value:'Tipo 1' },
+                { title: 'Tipo de poligono', field: 'poligono', type: 95, size: 6, value:'Tipo 1' },
             ]
         };
 
@@ -115,8 +115,8 @@
         const ad_activity = {
             group: 'ACTIVIDAD', iGroup: 'ad', fields: [
                 { title: 'Tipo de actividad', field: 'colocacion', type: 6, size: 12, options: [
-                    { title: 'Colocación', value: true, }, 
-                    { title: 'Renovación', value: false, },
+                    { title: 'Colocación', value: 'Colocación', }, 
+                    { title: 'Renovación', value: 'Renovación', },
                 ] },
             ]
         };
@@ -196,13 +196,15 @@
                 { title: 'Alto (m)', field: 'alto', type: 2, size: 4, value: 0, step: 0.01, min: 0 },
                 { title: 'Colores.', field: 'colores', type: 3, size: 6, value: 'N/A' },
                 { title: 'Texto.', field: 'texto', type: 3, size: 6, value: 'N/A' },
+                { title: 'Fecha de Inicio de Vigencia (Solicitado)', field: 'fecha_inicio', type: 5, size: 6},
+                { title: 'Fecha de Fin de Vigencia (Solicitado)', field: 'fecha_fin', type: 5, size: 6},
             ]
         };
 
         const ad_validity = {
             group: 'VIGENCIA DEL ANUNCIO', iGroup: 'validity', fields: [
-                { title: 'Fecha de Inicio de Vigencia', field: 'fecha_autorizacion', type: 5, size: 6},
-                { title: 'Fecha de Fin de Vigencia', field: 'fecha_fin_vigencia', type: 5, size: 6},
+                { title: 'Fecha de Inicio de Vigencia (A autorizar)', field: 'fecha_autorizacion', type: 5, size: 6},
+                { title: 'Fecha de Fin de Vigencia (A autorizar)', field: 'fecha_fin_vigencia', type: 5, size: 6},
             ]
         };
 

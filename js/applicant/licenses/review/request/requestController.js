@@ -20,10 +20,7 @@
             if (vm.license.property !== null) {
                 sessionStorage.setItem('__lat', vm.license.property.latitud);
                 sessionStorage.setItem('__lng', vm.license.property.longitud); 
-            } 
-
-            // $window.sessionStorage.setItem('__lat', vm.license.property.latitud);
-            // $window.sessionStorage.setItem('__lng', vm.license.property.longitud);
+            }
             
             const folios  = await appService.axios('get', 'folios');
             if (folios.status == 200) vm.foliosList = folios.data;

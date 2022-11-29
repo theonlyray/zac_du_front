@@ -84,10 +84,67 @@
             return dateStr;
         };
 
+        vm.get_license_yype = (license) => {
+
+        };
+
+        /**
+         *  check if license is a construction
+         * @param Int  $license
+         * @return boolean
+         */
+        vm.is_construction = (license_type_id) => {
+            //? numbers in db, id license type
+            return license_type_id >= 1 && license_type_id <= 6 ||
+            (license_type_id >= 8 && license_type_id <= 11) ||
+            (license_type_id == 15) ||
+            (license_type_id >= 25 && license_type_id <= 28);
+        };
+
+        /**
+         * check if license is an ad
+         * * @param License  $license
+         * @return boolean
+         */
+        vm.is_ad = (license_type_id) => {
+            return license_type_id >= 17 && license_type_id <= 20;
+        };
+
+        vm.checkLicenseType = license_type_id => {
+            if (license_type_id >= 1 && license_type_id <= 6 ||
+            (license_type_id >= 8 && license_type_id <= 11) ||
+            (license_type_id == 15) ||
+            (license_type_id >= 25 && license_type_id <= 28)) {
+                return 'construction';
+            }else if(license_type_id == 7){
+                return 'oficial_number';
+            }else if(license_type_id == 12){
+                return 'urban_services';
+            }else if (license_type_id == 13) {
+                return 'self-build';
+            }else if (license_type_id == 14) {
+                return 'safety';
+            }else if (license_type_id == 16) {
+                return 'compatibility';
+            }else if(license_type_id >= 17 && license_type_id <= 19) {
+                return 'ad';
+            }else if (license_type_id == 20) {
+                return 'vehicle_ad';
+            }else if (license_type_id == 21) {
+                return 'safety_antennas';
+            }else if (license_type_id == 22) {
+                return 'sfd';
+            }else if (license_type_id == 23) {
+                return 'completion';
+            }else if (license_type_id == 24) {
+                return 'break_pavement';
+            }
+        };
+
 
     }
 
     angular
         .module('app')
-        .service('appService', AppService)
+        .service('appService', AppService);
 })();

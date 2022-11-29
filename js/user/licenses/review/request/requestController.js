@@ -40,8 +40,10 @@
 
             // vm.qrcode = `https://consultas.licenciaszac.org/visitors/card.html?hash=${btoa(vm.solicitud.id)}`;
 
-            $window.sessionStorage.setItem('__lat', vm.license.property.latitud);
-            $window.sessionStorage.setItem('__lng', vm.license.property.longitud);
+            if (vm.license.property !== null) {
+              sessionStorage.setItem('__lat', vm.license.property.latitud);
+              sessionStorage.setItem('__lng', vm.license.property.longitud); 
+            }
 
             const folios  = await usrService.axios('get', 'folios');
             if (folios.status == 200) vm.foliosList = folios.data;

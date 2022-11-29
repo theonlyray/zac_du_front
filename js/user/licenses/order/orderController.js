@@ -112,7 +112,6 @@
         const setPayloadDuties = data => {
             vm.dutiesPayload = [];
             vm.methodFlag = 'post';
-            console.log(data);
             if (data != null) {
                 vm.methodFlag = 'patch';
                 for (const iterator of data.duties) {
@@ -121,10 +120,11 @@
                     vm.dutiesPayload.push(iterator);
                     calculate(vm.dutiesPayload);
                 }
-            }else{ 
-                if (isConstruction(vm.license)) setConstructionCost(vm.license);
-                if (isCompatibility(vm.license)) setCompatibilityCost(vm.license);
             }
+            // else{ 
+            //     if (isConstruction(vm.license)) setConstructionCost(vm.license);
+            //     if (isCompatibility(vm.license)) setCompatibilityCost(vm.license);
+            // }
         };
         
         vm.add = async (item) => {

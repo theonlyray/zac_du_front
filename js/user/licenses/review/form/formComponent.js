@@ -35,10 +35,6 @@
             vm.myform = true;
             vm.license = payload;
 
-            //?setting coor to map
-            sessionStorage.setItem('__lat', vm.license.property.latitud);
-            sessionStorage.setItem('__lng', vm.license.property.longitud);
-
             if (payload.license_type_id == 6 || payload.license_type_id == 23) {//?extension termination upodate with db id
               let typeId = vm.license.backgrounds[0].prior_license.license_type_id;
               vm.form = usrFactory.formGroups(typeId);            
@@ -55,7 +51,7 @@
               vm.license.backgrounds = castBackgroundDates(vm.license.backgrounds);
             }else if (payload.id == 22) {                        
               // vm.requestData.s_f_d.descripcion : vm.sfdOptions[0] };
-            }else if (payload.license_type_id >= 17 && payload.license_type_id == 20){
+            }else if (payload.license_type_id >= 17 && payload.license_type_id <= 20){
               vm.license.ad = castAdDates(vm.license.ad);
             }else if(vm.license.license_type_id == 14){
               restoreSafetyDestinity();
@@ -138,8 +134,10 @@
         if (vm.touch === false) {
           vm.touch = true;
 
-          vm.license.property.latitud = sessionStorage.getItem("__lat");
-          vm.license.property.longitud = sessionStorage.getItem("__lng");
+          if (vm.license.property !== null) {            
+            vm.license.property.latitud = sessionStorage.getItem("__lat");
+            vm.license.property.longitud = sessionStorage.getItem("__lng");
+          }
           const licId = $window.sessionStorage.getItem('__licId');
 
           vm.license.estatus = statusMutator(vm.license.estatus);
@@ -237,9 +235,9 @@
 
       const checkAd = () => {
         console.log(vm.license.ad.colocacion);    
-        if (vm.license.ad.colocacion == 'Colocación') vm.license.ad.colocacion = true;
-        else if (vm.license.ad.colocacion == 'Renovación') vm.license.ad.colocacion = false;
-        else vm.license.ad.colocacion = (vm.license.ad.colocacion == 'true');
+        // if (vm.license.ad.colocacion == 'Colocación') vm.license.ad.colocacion = true;
+        // else if (vm.license.ad.colocacion == 'Renovación') vm.license.ad.colocacion = false;
+        // else vm.license.ad.colocacion = (vm.license.ad.colocacion == 'true');
          
         // vm.license.ad.colocacion = (vm.license.ad.colocacion == 'Colocaión' ? true : false);
 

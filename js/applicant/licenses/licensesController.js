@@ -22,11 +22,25 @@
             if (licenses.status === 204) toastr.info('Aún no existen licencias.');
             else if (licenses.status === 400) toastr.warning(licenses.data.message);
             else{ 
-                vm.licenses = licenses.data;
+                vm.licenses = setTerExtFlag(licenses.data);
                 vm.licStat == 'Proceso' ? syncOrders(licenses.data) : null;
             }
-
+            console.log(vm.licenses);
             $scope.$digest();
+        };
+
+        /**
+         * @set true flag if license can have termination or extensions
+         * @param json data licenses json
+         * @return json licenses json with added flag
+         */
+        const setTerExtFlag = (data) => {
+            for (const iterator of data) {
+                iterator.setTerExtFlag = false;
+                if (appService.is_construction(iterator.license_type.id)) 
+                    iterator.setTerExtFlag = true;                
+            }
+            return data;
         };
 
         const setClassCounter = (data) => {

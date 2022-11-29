@@ -89,7 +89,7 @@
                 <!-- value="{{option.value}}" -->
                 <div class="form-group" ng-if="field.type == 6">
                   <h6 class="btn-link text-center"><b>{{field.title}}</b></h6>
-                  <h6 class="btn-link text-center"><b>{{$ctrl.license[item.iGroup][field.field]}}</b></h6>
+                  <h6 class="text-center"><b>{{$ctrl.license[item.iGroup][field.field]}}</b></h6>
                   <div class="form-check form-check-inline" ng-repeat="option in field.options">
                     <input class="form-check-input" type="radio" 
                       name="rd{{item.iGroup}}-{{field.field}}" 
@@ -188,6 +188,7 @@
                 <!-- select property polygon type-->
                 <div class="form-group" ng-if="field.type == 95">
                   <!-- data list -->
+                  <label for="ta-{{item.iGroup}}-{{$index}}"><b>{{field.title}}</b></label>
                   <div class="col-md-12">
                     <select class="custom-select custom-select-sm"
                       ng-model="$ctrl.license[item.iGroup][field.field]"
